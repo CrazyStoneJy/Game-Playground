@@ -1,16 +1,27 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom";
+import "./index.css";
+import App from "./App";
+import reportWebVitals from "./reportWebVitals";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import MineSweeper from "./mine-sweeper";
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-);
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
+const router = createBrowserRouter([
+    {
+        path: "/",
+        element: <App />,
+    },
+    {
+        path: "/sweeper",
+        element: <MineSweeper />,
+    },
+]);
+
+ReactDOM.render(
+    <React.StrictMode>
+        <RouterProvider router={router} />
+    </React.StrictMode>,
+    document.getElementById("root")
 );
 
 // If you want to start measuring performance in your app, pass a function
