@@ -6,8 +6,10 @@ export type Cell = {
     isFlag: boolean
 }
 
+export type Point = Omit<Cell, "val" | "isShown" | "isFlag">
+
 function randMine(): boolean {
-    return Math.random() < 0.1;
+    return Math.random() < 0.2;
 }
 
 function isMine(cell: Cell): boolean {
@@ -17,10 +19,33 @@ function isMine(cell: Cell): boolean {
 export const FLAG_MINE = 'X';
 const FLAG_NONE = 'O';
 
-function genGrid(v: number, h: number): Cell[][] {
+function genGrid(v: number, h: number, start?: Point): Cell[][] {
+    // first click 
+    // 在点击开始的周围，不能有雷
+    let surroundings: Point[] = [];
+    if (start) {
+        surroundings = getSurroundings(start, v, h);
+        // apend self
+        surroundings.push(start);
+        console.log(surroundings);
+    }
     return Array.from({ length: v }, (v_val: number, v_index: number) => {
         return Array.from({ length: h }, (h_val: number, h_index) => {
-            const val = randMine() ? FLAG_MINE : FLAG_NONE;
+            // init grid
+            let val = FLAG_NONE;
+            if (!start) {
+                return {
+                    x: h_index,
+                    y: v_index,
+                    val,
+                    isShown: false,
+                    isFlag: false
+                };
+            }
+
+            if (!contain(surroundings, { x: h_index, y: v_index })) {
+                val = randMine() ? FLAG_MINE : FLAG_NONE;
+            }
             return {
                 x: h_index,
                 y: v_index,
@@ -30,6 +55,25 @@ function genGrid(v: number, h: number): Cell[][] {
             };
         });
     })
+}
+
+function contain(points: Point[], point: Point) {
+    return points.some((p: Point) => {
+        return p.x === point.x && p.y === point.y;
+    });
+}
+
+function getSurroundings(point: Point, v: number, h: number): Point[] {
+    let surroundings: Point[] = [];
+    dirs.forEach((dir: { x: number, y: number }) => {
+        const x = point.x + dir.x;
+        const y = point.y + dir.y;
+        if (x < 0 || y < 0 || y >= v || x >= h) {
+            return;
+        }
+        surroundings.push({ x, y });
+    })
+    return surroundings;
 }
 
 /**
@@ -60,7 +104,7 @@ function genSurroundings(cells: Cell[][]) {
             }
             // traverse eight direction
             let mineCount = 0;
-            dirs.forEach((dir: {x: number, y: number}, _: number) => {
+            dirs.forEach((dir: { x: number, y: number }, _: number) => {
                 // check out of range wether or not.
                 let last_x = x_index;
                 let last_y = y_index;
@@ -79,9 +123,11 @@ function genSurroundings(cells: Cell[][]) {
     })
 }
 
-function gen(v: number, h: number): Cell[][] {
-    const cells: Cell[][] = genGrid(v, h);
-    genSurroundings(cells);
+function gen(v: number, h: number, start?: Point): Cell[][] {
+    const cells: Cell[][] = genGrid(v, h, start);
+    if (start) {
+        genSurroundings(cells);
+    }
     return cells;
 }
 
