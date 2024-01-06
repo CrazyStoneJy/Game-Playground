@@ -1,0 +1,30 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+        {
+            "type": "npm",
+            "script": "build",
+            "group": "build",
+            "problemMatcher": [],
+            "label": "npm: build",
+            "detail": "build",
+            "presentation": {
+                "clear": true
+            }
+        },
+        {
+            "type": "shell",
+            "command": "npm run test",
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
+            "problemMatcher": [],
+            "label": "npm: test",
+            "detail": "jest",
+            "presentation": {
+                "clear": true
+            }
+        }
+    ]
+}
