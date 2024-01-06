@@ -4,7 +4,7 @@ function MineSweeper() {
 
     return (
         <div>
-            
+            mine sweeper
         </div>
     );
 }
