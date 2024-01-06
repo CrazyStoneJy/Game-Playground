@@ -1,9 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import "./index.css";
 import App from "./App";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import MineSweeper from "./mine-sweeper";
+import MineSweep from "./mine-sweep";
 
 const router = createBrowserRouter([
     {
@@ -11,8 +10,8 @@ const router = createBrowserRouter([
         element: <App />,
     },
     {
-        path: "/sweeper",
-        element: <MineSweeper />,
+        path: "/mineSweep",
+        element: <MineSweep />,
     },
 ]);
 

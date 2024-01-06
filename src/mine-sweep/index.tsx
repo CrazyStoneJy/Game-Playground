@@ -3,8 +3,8 @@ import React from 'react';
 function MineSweeper() {
 
     return (
-        <div>
-            mine sweeper
+        <div className='bg-red-100'>
+            mine sweep test
         </div>
     );
 }
