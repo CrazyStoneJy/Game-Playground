@@ -1,7 +1,9 @@
 export type Cell = {
     x: number,
     y: number,
-    val: string
+    val: string,
+    isShown: boolean,
+    isFlag: boolean
 }
 
 function randMine(): boolean {
@@ -22,7 +24,9 @@ function genGrid(v: number, h: number): Cell[][] {
             return {
                 x: h_index,
                 y: v_index,
-                val
+                val,
+                isShown: false,
+                isFlag: false
             };
         });
     })
