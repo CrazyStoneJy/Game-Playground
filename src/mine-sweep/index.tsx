@@ -22,7 +22,7 @@ function MineSweeper() {
     
 
     useEffect(() => {
-        updateGrids(gen(level.v, level.h));
+        updateGrids(gen(level));
     }, []);
 
     useEffect(() => {
@@ -32,7 +32,7 @@ function MineSweeper() {
     }, [grids]);
 
     useEffect(() => {
-        updateGrids(gen(level.v, level.h));
+        updateGrids(gen(level));
     }, [level]);
 
     const click = (x: number, y: number) => {
@@ -45,7 +45,7 @@ function MineSweeper() {
         }
         let clickedGrids = grids;
         if (!isStartRef.current) {
-            clickedGrids = gen(level.v, level.h, { x, y });
+            clickedGrids = gen(level, { x, y });
             isStartRef.current = true;
         }
         updateGrids(show({ x, y }, clickedGrids));
@@ -81,7 +81,7 @@ function MineSweeper() {
 
     function reset() {
         setState(GameState.INIT);
-        updateGrids(gen(level.v, level.h));
+        updateGrids(gen(level));
         isStartRef.current = false;
     }
 
@@ -139,7 +139,6 @@ function MineSweeper() {
                                         h_index={h_index}
                                         click={click}
                                         flagClick={flagClick}
-                                        clickPoint={point}
                                     />
                                 );
                             })}

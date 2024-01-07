@@ -1,4 +1,5 @@
 import { clone } from "../base/utils";
+import { Level } from "./level";
 
 export type Cell = {
     x: number,
@@ -39,18 +40,18 @@ function isMine(cell: Cell): boolean {
     return cell && cell.val === FLAG_MINE;
 }
 
-function genGrid(v: number, h: number, start?: Point): Cell[][] {
+function genGrid(level: Level, start?: Point): Cell[][] {
+    const { mineCount } = level;
     // first click 
     // 在点击开始的周围，不能有雷
     let surroundings: Point[] = [];
     if (start) {
-        surroundings = getSurroundings(start, v, h);
+        surroundings = getSurroundings(start, level.v, level.h);
         // apend self
         surroundings.push(start);
-        console.log(surroundings);
     }
-    return Array.from({ length: v }, (v_val: number, v_index: number) => {
-        return Array.from({ length: h }, (h_val: number, h_index) => {
+    return Array.from({ length: level.v }, (v_val: number, v_index: number) => {
+        return Array.from({ length: level.h }, (h_val: number, h_index) => {
             // init grid
             let val = FLAG_NONE;
             if (!start) {
@@ -64,6 +65,7 @@ function genGrid(v: number, h: number, start?: Point): Cell[][] {
             }
 
             if (!contain(surroundings, { x: h_index, y: v_index })) {
+                // todo 
                 val = randMine() ? FLAG_MINE : FLAG_NONE;
             }
             return {
@@ -126,8 +128,8 @@ function genSurroundings(cells: Cell[][]) {
     })
 }
 
-function gen(v: number, h: number, start?: Point): Cell[][] {
-    const cells: Cell[][] = genGrid(v, h, start);
+function gen(level: Level, start?: Point): Cell[][] {
+    const cells: Cell[][] = genGrid(level, start);
     if (start) {
         genSurroundings(cells);
     }
@@ -171,6 +173,7 @@ function expand(point: Point, martix: Cell[][]) {
         }
     });
 }
+
 
 export default gen;
 export {

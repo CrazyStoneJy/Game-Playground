@@ -1,4 +1,4 @@
-type Level = {
+export type Level = {
     h: number;
     v: number;
     mineCount: number;
@@ -26,4 +26,4 @@ export {
     EASY,
     MID,
     DIF
-}
+};
