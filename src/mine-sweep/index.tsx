@@ -65,6 +65,7 @@ function MineSweeper() {
             const mineFlagCount = cells.filter(
                 (cell: Cell) => isMine(cell) && cell.isFlag
             ).length;
+            // todo check win condition, 
             if (shownCount + mineFlagCount === cells.length) {
                 alert("you win");
             }
@@ -76,18 +77,6 @@ function MineSweeper() {
         const cell = matrix[v_index][h_index];
         cell.isFlag = !cell.isFlag;
         updateGrids(matrix);
-    };
-
-    const debug = () => {
-        const newGrids = grids.map((cells: Cell[]) => {
-            return cells.map((cell: Cell) => {
-                return {
-                    ...cell,
-                    isShown: true,
-                };
-            });
-        });
-        updateGrids(newGrids);
     };
 
     function reset() {

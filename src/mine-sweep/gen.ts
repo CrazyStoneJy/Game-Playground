@@ -31,13 +31,6 @@ const dirs = [
     { x: 1, y: 1 }
 ];
 
-const dirs_four = [
-    { x: 0, y: -1 },
-    { x: 0, y: 1 },
-    { x: -1, y: 0 },
-    { x: 1, y: 0 }
-];
-
 function randMine(): boolean {
     return Math.random() < 0.2;
 }
@@ -149,6 +142,7 @@ function show(point: Point, cells: Cell[][]): Cell[][] {
         matrix.flat().forEach((_cell: Cell) => {
             if (isMine(_cell)) {
                 _cell.isShown = true;
+                _cell.isFlag = false;
             }
         })
         return matrix;
