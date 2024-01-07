@@ -1,4 +1,4 @@
-import { Cell, isMine } from "./gen";
+import { Cell, Point, isMine } from "./gen";
 
 type CellViewProps = {
     matrix: Cell[][];
@@ -6,11 +6,12 @@ type CellViewProps = {
     h_index: number;
     click?: Function;
     flagClick?: Function;
+    clickPoint: Point;
 };
 
 function CellView(props: CellViewProps) {
 
-    const { matrix, v_index, h_index, click, flagClick } = props;
+    const { matrix, v_index, h_index, click, flagClick, clickPoint } = props;
 
     function renderCellContent(cell: Cell) {
         const { val, isShown, isFlag } = cell;
@@ -61,9 +62,9 @@ function CellView(props: CellViewProps) {
     function background(v_index: number, h_index: number): string {
         const cell = matrix[v_index][h_index];
         const { isShown } = cell;
-        // if (point.x === h_index && point.y === v_index && isMine(cell)) {
-        //     return "bg-red-400";
-        // }
+        if (isMine(cell) && cell.isShown) {
+            return "bg-red-400";
+        }
         return isShown ? "bg-white-100" : "bg-gray-100";
     }
 

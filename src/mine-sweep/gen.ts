@@ -142,19 +142,24 @@ function gen(v: number, h: number, start?: Point): Cell[][] {
 }
 
 function show(point: Point, cells: Cell[][]): Cell[][] {
-    const matix = clone(cells);
-    const cell = matix[point.y][point.x];
+    const matrix = clone(cells);
+    const cell = matrix[point.y][point.x];
+    // 如果点中地雷，则将其他雷也全部展示
     if (isMine(cell)) {
-        cell.isShown = true;
-        return matix;
+        matrix.flat().forEach((_cell: Cell) => {
+            if (isMine(_cell)) {
+                _cell.isShown = true;
+            }
+        })
+        return matrix;
     }
     // console.log(cell);
     if (cell.val === FLAG_ZERO) {
-        expand(point, matix);
-        return matix;
+        expand(point, matrix);
+        return matrix;
     } 
     cell.isShown = true;
-    return matix;
+    return matrix;
 }
 
 function expand(point: Point, martix: Cell[][]) {
