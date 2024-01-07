@@ -1,3 +1,5 @@
+import { clone } from "../base/utils";
+
 export type Cell = {
     x: number,
     y: number,
@@ -8,16 +10,41 @@ export type Cell = {
 
 export type Point = Omit<Cell, "val" | "isShown" | "isFlag">
 
+export const FLAG_MINE = 'X';
+const FLAG_NONE = 'O';
+const FLAG_ZERO = '';
+
+/**
+ * eight direction
+ * [ up-left ,  up  , up-right]
+ * [   left  , self ,  right  ]
+ * [down-left, down , down-right]
+ */
+const dirs = [
+    { x: -1, y: -1 },
+    { x: 0, y: -1 },
+    { x: 1, y: -1 },
+    { x: -1, y: 0 },
+    { x: 1, y: 0 },
+    { x: -1, y: 1 },
+    { x: 0, y: 1 },
+    { x: 1, y: 1 }
+];
+
+const dirs_four = [
+    { x: 0, y: -1 },
+    { x: 0, y: 1 },
+    { x: -1, y: 0 },
+    { x: 1, y: 0 }
+];
+
 function randMine(): boolean {
     return Math.random() < 0.2;
 }
 
 function isMine(cell: Cell): boolean {
-    return cell.val === FLAG_MINE;
+    return cell && cell.val === FLAG_MINE;
 }
-
-export const FLAG_MINE = 'X';
-const FLAG_NONE = 'O';
 
 function genGrid(v: number, h: number, start?: Point): Cell[][] {
     // first click 
@@ -76,23 +103,6 @@ function getSurroundings(point: Point, v: number, h: number): Point[] {
     return surroundings;
 }
 
-/**
- * eight direction
- * [ up-left ,  up  , up-right]
- * [   left  , self ,  right  ]
- * [down-left, down , down-right]
- */
-const dirs = [
-    { x: -1, y: -1 },
-    { x: 0, y: -1 },
-    { x: 1, y: -1 },
-    { x: -1, y: 0 },
-    { x: 1, y: 0 },
-    { x: -1, y: 1 },
-    { x: 0, y: 1 },
-    { x: 1, y: 1 }
-];
-
 function genSurroundings(cells: Cell[][]) {
     const V = cells.length;
     const H = cells[0].length;
@@ -118,7 +128,7 @@ function genSurroundings(cells: Cell[][]) {
                     mineCount++;
                 }
             });
-            cells[y_index][x_index].val = mineCount + '';
+            cells[y_index][x_index].val = mineCount > 0 ? (mineCount + '') : '';
         });
     })
 }
@@ -131,4 +141,40 @@ function gen(v: number, h: number, start?: Point): Cell[][] {
     return cells;
 }
 
+function show(point: Point, cells: Cell[][]): Cell[][] {
+    const matix = clone(cells);
+    const cell = matix[point.y][point.x];
+    if (isMine(cell)) {
+        cell.isShown = true;
+        return matix;
+    }
+    // console.log(cell);
+    if (cell.val === FLAG_ZERO) {
+        expand(point, matix);
+        return matix;
+    } 
+    cell.isShown = true;
+    return matix;
+}
+
+function expand(point: Point, martix: Cell[][]) {
+    const V = martix.length;
+    const H = martix[0].length;
+    const points: Point[] = getSurroundings(point, V, H);
+    points.forEach((p: Point) => {
+        const cell = martix[p.y][p.x];
+        if (cell.val === FLAG_MINE || cell.isShown) {
+            return;
+        }
+        cell.isShown = true;
+        if (martix[p.y][p.x].val === FLAG_ZERO) {
+            expand(p, martix);
+        }
+    });
+}
+
 export default gen;
+export {
+    show,
+    isMine
+}
