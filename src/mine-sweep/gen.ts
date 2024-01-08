@@ -161,6 +161,7 @@ function show(point: Point, cells: Cell[][]): Cell[][] {
 function expand(point: Point, martix: Cell[][]) {
     const V = martix.length;
     const H = martix[0].length;
+    martix[point.y][point.x].isShown = true;
     const points: Point[] = getSurroundings(point, V, H);
     points.forEach((p: Point) => {
         const cell = martix[p.y][p.x];

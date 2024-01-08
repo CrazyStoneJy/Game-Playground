@@ -9,7 +9,6 @@ type CellViewProps = {
 };
 
 function CellView(props: CellViewProps) {
-
     const { matrix, v_index, h_index, click, flagClick } = props;
 
     function renderCellContent(cell: Cell) {
@@ -58,22 +57,35 @@ function CellView(props: CellViewProps) {
         );
     }
 
-    function background(v_index: number, h_index: number): string {
-        const cell = matrix[v_index][h_index];
+    function background(cell: Cell): string {
         const { isShown } = cell;
-        if (isMine(cell) && cell.isShown) {
-            return "bg-red-400";
+        if (isMine(cell) && isShown) {
+            return `bg-red-400`;
         }
-        return isShown ? "bg-white-100" : "bg-gray-100";
+        return isShown ? `bg-white-100` : `bg-gray-100`;
+    }
+
+    function textColor(cell: Cell) {
+        const { val } = cell;
+        switch (val) {
+            case "1":
+                return "text-blue-400";
+            case "2":
+                return "text-green-400";
+            case "3":
+                return "text-orange-400";
+            default:
+                return "text-red-400";
+        }
     }
 
     return (
         <div
             key={`x_${h_index}`}
             className={`flex justify-center items-center w-9 h-9 border border-gray-50 ${background(
-                v_index,
-                h_index
-            )} hover:bg-gray-300`}
+                matrix[v_index][h_index]
+            )} 
+            ${textColor(matrix[v_index][h_index])} hover:bg-gray-300`}
             onClick={() => click && click(h_index, v_index)}
             onContextMenu={(e) => {
                 e.preventDefault();

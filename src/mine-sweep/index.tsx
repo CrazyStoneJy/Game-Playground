@@ -4,9 +4,6 @@ import { clone } from "../base/utils";
 import CellView from "./cell";
 import { DIF, EASY, MID } from "./level";
 
-// const H = 6;
-// const V = 6;
-
 enum GameState {
     INIT = 0,
     RUNNING = INIT + 1,
@@ -26,7 +23,7 @@ function MineSweeper() {
     }, []);
 
     useEffect(() => {
-        if (point.x !== -1 && point.y !== -1) {
+        if (point.x !== -1 && point.y !== -1 && grids) {
             check(grids, point.x, point.y);
         }
     }, [grids]);
@@ -48,7 +45,9 @@ function MineSweeper() {
             clickedGrids = gen(level, { x, y });
             isStartRef.current = true;
         }
-        updateGrids(show({ x, y }, clickedGrids));
+        const cgrids = show({ x, y }, clickedGrids);
+        console.log(cgrids);
+        updateGrids(cgrids);
     };
 
     function check(matrix: Cell[][], x: number, y: number) {
@@ -100,6 +99,7 @@ function MineSweeper() {
                     className="flex justify-center items-center h-8 w-16 rounded-md bg-blue-400 hover:bg-blue-200 text-white mr-2"
                     onClick={() => {
                         refreshLevel(EASY);
+                        isStartRef.current = false;
                     }}
                 >
                     简单
@@ -108,6 +108,7 @@ function MineSweeper() {
                     className="flex justify-center items-center h-8 w-16 rounded-md bg-blue-400 hover:bg-blue-200 text-white mr-2"
                     onClick={() => {
                         refreshLevel(MID);
+                        isStartRef.current = false;
                     }}
                 >
                     中等
@@ -116,6 +117,7 @@ function MineSweeper() {
                     className="flex justify-center items-center h-8 w-16 rounded-md bg-blue-400 hover:bg-blue-200 text-white"
                     onClick={() => {
                         refreshLevel(DIF);
+                        isStartRef.current = false;
                     }}
                 >
                     困难
