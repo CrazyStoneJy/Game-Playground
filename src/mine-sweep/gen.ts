@@ -32,8 +32,45 @@ const dirs = [
     { x: 1, y: 1 }
 ];
 
-function randMine(): boolean {
-    return Math.random() < 0.2;
+function genMine(matrix: Cell[][], level: Level, start?: Point): Cell[][] {
+    if (!start) {
+        return matrix;
+    }
+    // 在点击开始的周围，不能有雷
+    let surroundings: Point[] = [];
+    surroundings = getSurroundings(start, level.v, level.h);
+    // apend self
+    surroundings.push(start);
+
+    // gen mine
+    const rawCells = matrix.flat();
+    const cells = rawCells.filter((cell: Cell) => {
+        return !contain(surroundings, {x: cell.x, y: cell.y});
+    });
+    console.log(rawCells);
+    console.log(surroundings);
+    console.log(cells);
+    
+    randMine(cells, level.mineCount);
+    return matrix;
+}
+
+function contain(points: Point[], point: Point): boolean {
+    return points.some((p: Point) => {
+        return p.x === point.x && p.y === point.y;
+    });
+}
+
+function randMine(cells: Cell[], count: number) {
+    while (count > 0) {
+        const index = Math.floor(Math.random() * cells.length);
+        console.log('index:', index);
+        
+        if (cells[index].val !== FLAG_MINE) {
+            cells[index].val = FLAG_MINE;
+            --count;
+        }
+    }
 }
 
 function isMine(cell: Cell): boolean {
@@ -41,48 +78,18 @@ function isMine(cell: Cell): boolean {
 }
 
 function genGrid(level: Level, start?: Point): Cell[][] {
-    const { mineCount } = level;
-    // first click 
-    // 在点击开始的周围，不能有雷
-    let surroundings: Point[] = [];
-    if (start) {
-        surroundings = getSurroundings(start, level.v, level.h);
-        // apend self
-        surroundings.push(start);
-    }
-    return Array.from({ length: level.v }, (v_val: number, v_index: number) => {
+    const matrix = Array.from({ length: level.v }, (v_val: number, v_index: number) => {
         return Array.from({ length: level.h }, (h_val: number, h_index) => {
-            // init grid
-            let val = FLAG_NONE;
-            if (!start) {
-                return {
-                    x: h_index,
-                    y: v_index,
-                    val,
-                    isShown: false,
-                    isFlag: false
-                };
-            }
-
-            if (!contain(surroundings, { x: h_index, y: v_index })) {
-                // todo 
-                val = randMine() ? FLAG_MINE : FLAG_NONE;
-            }
             return {
                 x: h_index,
                 y: v_index,
-                val,
+                val: FLAG_NONE,
                 isShown: false,
                 isFlag: false
             };
         });
-    })
-}
-
-function contain(points: Point[], point: Point) {
-    return points.some((p: Point) => {
-        return p.x === point.x && p.y === point.y;
     });
+    return genMine(matrix, level, start);
 }
 
 function getSurroundings(point: Point, v: number, h: number): Point[] {
@@ -153,7 +160,7 @@ function show(point: Point, cells: Cell[][]): Cell[][] {
     if (cell.val === FLAG_ZERO) {
         expand(point, matrix);
         return matrix;
-    } 
+    }
     cell.isShown = true;
     return matrix;
 }
@@ -175,9 +182,16 @@ function expand(point: Point, martix: Cell[][]) {
     });
 }
 
+function getUnmarkedMineCount(matrix: Cell[][]): number {
+    const mineCount = matrix.flat().filter((cell: Cell) => isMine(cell)).length;
+    const markedCount: number = matrix.flat().filter((cell: Cell) => cell.isFlag).length;
+    return mineCount - markedCount > 0 ? mineCount - markedCount : 0;
+}
+
 
 export default gen;
 export {
     show,
-    isMine
+    isMine,
+    getUnmarkedMineCount
 }
