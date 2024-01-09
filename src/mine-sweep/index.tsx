@@ -19,11 +19,14 @@ function MineSweeper() {
     const [mineCount, changeMineCount] = useState(0);
     const [countdown, refrsehCountdown] = useState(0);
     const [isCountdown, changeCountdownState] = useState(false);
-    let intervalId: any;
+    let intervalId: number;
 
     useEffect(() => {
         updateGrids(gen(level));
         changeMineCount(level.mineCount);
+        return (() => {
+            clearInterval(intervalId)
+        });
     }, []);
 
     useEffect(() => {
@@ -37,17 +40,12 @@ function MineSweeper() {
         changeMineCount(level.mineCount);
     }, [level]);
 
-    useEffect(() => {
-        if (isCountdown) {
-            intervalId = setInterval(() => {
-                console.log(countdown);
-                refrsehCountdown(countdown + 1);
-            }, 1000);
-            return (() => {
-                clearInterval(intervalId);
-            });
-        }
-    });
+    function startCountdown() {
+        // @ts-ignore
+        intervalId = setInterval(() => {
+            refrsehCountdown(cd => cd + 1);
+        }, 1000);
+    }
 
     const click = (x: number, y: number) => {
         if (state > GameState.RUNNING) {
@@ -64,18 +62,27 @@ function MineSweeper() {
         }
         updateGrids(show({ x, y }, clickedGrids));
         if (!isCountdown) {
-            // startCountdown();
             changeCountdownState(true);
+            startCountdown();
         }
     };
+
+    function resetTimer() {
+        clearInterval(intervalId);
+        changeCountdownState(false);
+        refrsehCountdown(0);   
+    }
 
     function check(matrix: Cell[][], x: number, y: number) {
         // check result
         setTimeout(() => {
             if (isMine(matrix[y][x])) {
-                alert("you lost");
                 setState(GameState.FINISHED);
-                clearInterval(intervalId);
+                resetTimer();
+                setTimeout(() => {
+                    alert("you lost");
+                }, 100);
+                return;
             }
             const cells = matrix.flat();
             const shownCount = cells.filter(
@@ -85,8 +92,10 @@ function MineSweeper() {
                 (cell: Cell) => isMine(cell) && cell.isFlag
             ).length;
             if (shownCount + mineFlagCount === cells.length) {
-                alert("you win");
-                clearInterval(intervalId);
+                resetTimer();
+                setTimeout(() => {
+                    alert("you win");
+                }, 100);
             }
         }, 100);
     }
@@ -104,15 +113,11 @@ function MineSweeper() {
         updateGrids(gen(level));
         changeMineCount(level.mineCount);
         isStartRef.current = false;
-        clearInterval(intervalId);
-        changeCountdownState(false);
-        refrsehCountdown(0);
+        resetTimer();
     }
 
     function changeLevel(level: Level) {
-        clearInterval(intervalId);
-        refrsehCountdown(0);
-        changeCountdownState(false);
+        resetTimer();
         refreshLevel(level);
         isStartRef.current = false;
     }
@@ -163,6 +168,15 @@ function MineSweeper() {
                     }}
                 >
                     困难
+                </button>
+                <button
+                    className="flex justify-center items-center h-8 w-16 rounded-md bg-blue-400 hover:bg-blue-200 text-white ml-4"
+                    onClick={() => {
+                        // startCountdown();
+                        clearInterval(intervalId);
+                    }}
+                >
+                    clear
                 </button>
             </div>
         );
