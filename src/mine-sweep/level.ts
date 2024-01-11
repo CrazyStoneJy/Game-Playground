@@ -5,8 +5,8 @@ export type Level = {
 }
 
 const EASY: Level = {
-    h: 6,
-    v: 6,
+    h: 8,
+    v: 8,
     mineCount: 8
 }
 
