@@ -95,6 +95,7 @@ function MineSweeper() {
                 (cell: Cell) => isMine(cell) && cell.isFlag
             ).length;
             if (shownCount + mineFlagCount === cells.length) {
+                setState(GameState.FINISHED);
                 resetTimer(false);
                 setTimeout(() => {
                     alert("you win");
