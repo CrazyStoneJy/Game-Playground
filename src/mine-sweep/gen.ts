@@ -1,36 +1,11 @@
 import { clone } from "../base/utils";
+import { Cell, Point, dirs } from "../model/model";
 import { Level } from "./level";
 
-export type Cell = {
-    x: number,
-    y: number,
-    val: string,
-    isShown: boolean,
-    isFlag: boolean
-}
-
-export type Point = Omit<Cell, "val" | "isShown" | "isFlag">
 
 export const FLAG_MINE = 'X';
 const FLAG_NONE = 'O';
 const FLAG_ZERO = '';
-
-/**
- * eight direction
- * [ up-left ,  up  , up-right]
- * [   left  , self ,  right  ]
- * [down-left, down , down-right]
- */
-const dirs = [
-    { x: -1, y: -1 },
-    { x: 0, y: -1 },
-    { x: 1, y: -1 },
-    { x: -1, y: 0 },
-    { x: 1, y: 0 },
-    { x: -1, y: 1 },
-    { x: 0, y: 1 },
-    { x: 1, y: 1 }
-];
 
 function genMine(matrix: Cell[][], level: Level, start?: Point): Cell[][] {
     if (!start) {
@@ -84,7 +59,7 @@ function genGrid(level: Level, start?: Point): Cell[][] {
                 x: h_index,
                 y: v_index,
                 val: FLAG_NONE,
-                isShown: false,
+                visible: false,
                 isFlag: false
             };
         });
@@ -150,7 +125,7 @@ function show(point: Point, cells: Cell[][]): Cell[][] {
     if (isMine(cell)) {
         matrix.flat().forEach((_cell: Cell) => {
             if (isMine(_cell)) {
-                _cell.isShown = true;
+                _cell.visible = true;
                 _cell.isFlag = false;
             }
         })
@@ -161,21 +136,21 @@ function show(point: Point, cells: Cell[][]): Cell[][] {
         expand(point, matrix);
         return matrix;
     }
-    cell.isShown = true;
+    cell.visible = true;
     return matrix;
 }
 
 function expand(point: Point, martix: Cell[][]) {
     const V = martix.length;
     const H = martix[0].length;
-    martix[point.y][point.x].isShown = true;
+    martix[point.y][point.x].visible = true;
     const points: Point[] = getSurroundings(point, V, H);
     points.forEach((p: Point) => {
         const cell = martix[p.y][p.x];
-        if (cell.val === FLAG_MINE || cell.isShown) {
+        if (cell.val === FLAG_MINE || cell.visible) {
             return;
         }
-        cell.isShown = true;
+        cell.visible = true;
         if (martix[p.y][p.x].val === FLAG_ZERO) {
             expand(p, martix);
         }

@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
-import gen, { Cell, getUnmarkedMineCount, isMine, show } from "./gen";
+import gen, { getUnmarkedMineCount, isMine, show } from "./gen";
 import { clone } from "../base/utils";
 import CellView from "./cell";
 import { DIF, EASY, Level, MID } from "./level";
+import { Cell } from "../model/model";
 
 enum GameState {
     INIT = 0,
@@ -89,7 +90,7 @@ function MineSweeper() {
             }
             const cells = matrix.flat();
             const shownCount = cells.filter(
-                (cell: Cell) => cell.isShown
+                (cell: Cell) => cell.visible
             ).length;
             const mineFlagCount = cells.filter(
                 (cell: Cell) => isMine(cell) && cell.isFlag
@@ -137,7 +138,7 @@ function MineSweeper() {
                     onClick={() => {
                         const matrix = clone(grids);
                         matrix.flat().forEach((cell: Cell) => {
-                            cell.isShown = true;
+                            cell.visible = true;
                         });
                         updateGrids(matrix);
                     }}

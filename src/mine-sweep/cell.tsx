@@ -1,4 +1,5 @@
-import { Cell, isMine } from "./gen";
+import { Cell } from "../model/model";
+import { isMine } from "./gen";
 
 type CellViewProps = {
     matrix: Cell[][];
@@ -12,15 +13,15 @@ function CellView(props: CellViewProps) {
     const { matrix, v_index, h_index, click, flagClick } = props;
 
     function renderCellContent(cell: Cell) {
-        const { val, isShown, isFlag } = cell;
+        const { val, visible, isFlag } = cell;
         if (isFlag) {
             return renderFlag();
         }
-        if (isShown) {
+        if (visible) {
             if (isMine(cell)) {
                 return renderMine();
             }
-            return isShown ? val : "";
+            return visible ? val : "";
         }
         return null;
     }
@@ -58,11 +59,11 @@ function CellView(props: CellViewProps) {
     }
 
     function background(cell: Cell): string {
-        const { isShown } = cell;
-        if (isMine(cell) && isShown) {
+        const { visible } = cell;
+        if (isMine(cell) && visible) {
             return `bg-red-400`;
         }
-        return isShown ? `bg-white-100` : `bg-gray-100`;
+        return visible ? `bg-white-100` : `bg-gray-100`;
     }
 
     function textColor(cell: Cell) {
