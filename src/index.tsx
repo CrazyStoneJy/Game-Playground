@@ -5,6 +5,7 @@ import './index.css';
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import MineSweep from "./mine-sweep";
 import SudokuGame from "./sudoku";
+import GameOfLife from "./game-of-life";
 
 const router = createBrowserRouter([
     {
@@ -18,6 +19,10 @@ const router = createBrowserRouter([
     {
         path: "/sudoku",
         element: <SudokuGame />,
+    },
+    {
+        path: "/gameOfLife",
+        element: <GameOfLife />,
     },
 ]);
 

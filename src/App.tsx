@@ -14,6 +14,10 @@ const routers: Route[] = [
         path: "/sudoku",
         name: "sudoku",
     },
+    {
+        path: "/gameOfLife",
+        name: "gameOfLife",
+    },
 ];
 
 function App() {
