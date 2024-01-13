@@ -18,6 +18,10 @@ const routers: Route[] = [
         path: "/gameOfLife",
         name: "gameOfLife",
     },
+    {
+        path: "/snake",
+        name: "snake",
+    },
 ];
 
 function App() {
