@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 
 type Route = {
@@ -25,6 +25,11 @@ const routers: Route[] = [
 ];
 
 function App() {
+
+    useEffect(() => {
+        console.log('home init');
+    }, []);
+
     return (
         <div className="App">
             <header className="App-header">

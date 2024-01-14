@@ -42,7 +42,7 @@ function SudokuGame() {
 
     useEffect(() => {
         // Update the document title using the browser API
-        console.log(">>>useEffect");
+        // console.log(">>>useEffect");
     });
 
     return (

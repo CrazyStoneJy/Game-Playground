@@ -25,6 +25,7 @@ function MineSweeper() {
     useEffect(() => {
         updateGrids(gen(level));
         changeMineCount(level.mineCount);
+        console.log('mine sweep init');
     }, []);
 
     useEffect(() => {

@@ -1,30 +1,30 @@
-import { GCell, Point } from "../model/model";
+import { GCell, Point, SPoint } from "../model/model";
 
 
 export const DEFAULT_H = 20;
 export const DEFAULT_W = 20;
 
 
-interface BoardProps {
-    grids: GCell[][];
+interface BoardProps<T extends SPoint> {
+    grids: T[][];
     onItemClick?: (point: Point) => void;
 }
 
-function Board(props: BoardProps) {
+function Board<T extends SPoint>(props: BoardProps<T>) {
     const { grids, onItemClick } = props;
 
-    function background(cell: GCell): string {
+    function background(cell: SPoint): string {
         const { visible } = cell;
         return visible ? `bg-gray-400` : `bg-slate-100`;
     }
 
     return (
         <div className="flex w-auto h-auto justify-center align-middle flex-col ">
-            {grids.map((cells: GCell[], h_index: number) => {
+            {grids.map((cells: SPoint[], h_index: number) => {
                 return (
                     <div key={`item_${h_index}`} className="flex flex-row justify-center items-center">
                         {
-                            cells.map((cell: GCell, w_index: number) => {
+                            cells.map((cell: SPoint, w_index: number) => {
                                 return (
                                     <div
                                         key={`child_${w_index}`}
