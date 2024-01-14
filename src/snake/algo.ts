@@ -13,6 +13,16 @@ function initSnake(grids: VPoint[][]): SnakeEnity {
     // init body
     const body: SPoint[] = [];
     body.push({
+        ...matrix[midH][midW - 3],
+        visible: true,
+        cur_dir: 1
+    });
+    body.push({
+        ...matrix[midH][midW - 2],
+        visible: true,
+        cur_dir: 1
+    });
+    body.push({
         ...matrix[midH][midW - 1],
         visible: true,
         cur_dir: 1
