@@ -4,6 +4,7 @@ export type SnakeEnity = {
     body: SPoint[], // 蛇身
     head: SPoint, // 蛇头
     isAlive: boolean; // 是否存活
+    dir: number
 };
 
 export const DEFAULT_SNAKE_H = 20;

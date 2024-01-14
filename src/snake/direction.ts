@@ -12,10 +12,8 @@ const mask_r = parseInt('0001', 2);
 
 // next diection colud be.
 const turn_dirs = [
-    [mask_l, mask_r, mask_u], // last dir is up
-    [mask_l, mask_r, mask_d], // last dir is down
-    [mask_d, mask_r, mask_u], // last dir is left
-    [mask_l, mask_d, mask_u] // last dir is right
+    [mask_l, mask_r], // last dir is up
+    [mask_d, mask_u], // last dir is left
 ];
 
 function initDir(): number {
@@ -39,7 +37,13 @@ function isRight(dir: number) {
 }
 
 function change(dir:number, mask: number): number {
-    return (dir & mask) | mask;
+    if ((isUp(dir) || isDown(dir)) && turn_dirs[0].indexOf(mask) >= 0) {
+        return (dir & mask) | mask;
+    }
+    if ((isLeft(dir) || isRight(dir)) && turn_dirs[1].indexOf(mask) >= 0) {
+        return (dir & mask) | mask;
+    }
+    return dir;
 }
 
 function getPoint(dir: number): Point {

@@ -4,7 +4,7 @@ import { SPoint, VPoint } from "../model/model";
 import { initSnake, run } from "./algo";
 import { clone } from "../base/utils";
 import { DEFAULT_SNAKE_H, DEFAULT_SNAKE_W, SnakeEnity } from "./model";
-import { change, mask_u } from "./direction";
+import { change, mask_d, mask_l, mask_r, mask_u } from "./direction";
 
 enum PlayState {
     DEFAULT = -2,
@@ -32,9 +32,37 @@ function Snake() {
     const [playState, changePlayState] = useState(PlayState.DEFAULT);
     let intervalId: any;
 
+    const listener = (event: any) => {
+        const keyName = event.key;
+        if (keyName === 'w') {
+            up();
+        } else if (keyName === 's') {
+            down();
+        } else if (keyName === 'a') {
+            left();
+        } else if (keyName === 'd') {
+            down();
+        } else if (keyName === 'r') {
+            start();
+        }
+    }
+
+    useEffect(() => {
+        document.addEventListener(
+            "keydown",
+            listener,
+            false,
+        );
+        return (() => {
+            console.log('remove listener');
+            document.removeEventListener("keydown", listener, false);
+        });
+    }, []);
+
     useEffect(() => {
         changePlayState(PlayState.INIT);
         init();
+        console.log('init');
     }, []);
 
     function init() {
@@ -43,7 +71,11 @@ function Snake() {
 
     function updateUI() {
         const matrix: VPoint[][] = clone(grids);
-        const { head } = snake || {};
+        const { head, isAlive } = snake || {};
+        if (!isAlive) {
+            alert('you are lost!');
+            return;
+        }
         if (head) {
             matrix[head.y][head.x].visible = true;
         }
@@ -54,8 +86,6 @@ function Snake() {
     }
 
     useEffect(() => {
-        console.log('>>>useEffect, playState: ', playState);
-        
         const { isAlive } = snake;
         // @ts-ignore
         if (playState !== PlayState.RUNNING || !isAlive) {
@@ -63,7 +93,7 @@ function Snake() {
         }
         intervalId = setInterval(() => {
             refreshSnake(run(snake, grids));
-            console.log('run animation');
+            // console.log('run animation');
         }, 1000);
         return (() => {
             clearInterval(intervalId);
@@ -76,7 +106,12 @@ function Snake() {
 
     function start() {
         console.log('>>>start>>>>');
-        changePlayState(PlayState.RUNNING);
+        changeGrids(default_grids);
+        refreshSnake(initSnake(grids));
+        setTimeout(() => {
+            updateUI();
+            changePlayState(PlayState.RUNNING);
+        }, 100);
     }
 
     function stop() {
@@ -84,22 +119,27 @@ function Snake() {
     }
 
     function up() {
-        const { head } = snake;
-        const { next_dir } = head || {};
-        head.next_dir = change(next_dir, mask_u);
+        const { dir } = snake;
+        snake.dir = change(dir, mask_u);
         refreshSnake(snake);
     }
 
     function down() {
-
+        const { dir } = snake;
+        snake.dir = change(dir, mask_d);
+        refreshSnake(snake);
     }
 
     function left() {
-
+        const { dir } = snake;
+        snake.dir = change(dir, mask_l);
+        refreshSnake(snake);
     }
 
     function right() {
-
+        const { dir } = snake;
+        snake.dir = change(dir, mask_r);
+        refreshSnake(snake);
     }
 
     return (

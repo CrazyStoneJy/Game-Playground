@@ -9,8 +9,7 @@ export type Cell = {
 export type GCell = Omit<Cell, "isFlag">;
 
 export type SDir = {
-    cur_dir: number,
-    next_dir: number;
+    cur_dir: number
 }
 
 export type VPoint = Omit<Cell, "val" | "isFlag"> 
