@@ -1,6 +1,9 @@
 // { up, down, left, right }
 // u d l r
 // 1 1 1 1
+
+import { Point, dirs_four } from "../model/model";
+
 // let direction: number = 1;
 const mask_u = parseInt('1000', 2);
 const mask_d = parseInt('0100', 2);
@@ -39,6 +42,22 @@ function change(dir:number, mask: number): number {
     return (dir & mask) | mask;
 }
 
+function getPoint(dir: number): Point {
+    if (isUp(dir)) {
+        return dirs_four[0];
+    }
+    if (isDown(dir)) {
+        return dirs_four[1];
+    }
+    if (isLeft(dir)) {
+        return dirs_four[2];
+    }
+    if (isRight(dir)) {
+        return dirs_four[3];
+    }
+    return dirs_four[3];
+}
+
 export {
     isDown,
     isLeft,
@@ -50,5 +69,6 @@ export {
     mask_r,
     change,
     initDir,
-    turn_dirs
+    turn_dirs,
+    getPoint
 }

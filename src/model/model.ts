@@ -8,7 +8,14 @@ export type Cell = {
 
 export type GCell = Omit<Cell, "isFlag">;
 
-export type SPoint = Omit<Cell, "val" | "isFlag">
+export type SDir = {
+    cur_dir: number,
+    next_dir: number;
+}
+
+export type VPoint = Omit<Cell, "val" | "isFlag"> 
+
+export type SPoint = VPoint & SDir;
 
 export type Point = Omit<Cell, "val" | "visible" | "isFlag">;
 

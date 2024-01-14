@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import Board, { DEFAULT_H, DEFAULT_W } from "../game-of-life/board";
-import { SPoint } from "../model/model";
-import { initSnake } from "./algo";
+import { SPoint, VPoint } from "../model/model";
+import { initSnake, run } from "./algo";
 import { clone } from "../base/utils";
-import { SnakeEnity } from "./model";
+import { DEFAULT_SNAKE_H, DEFAULT_SNAKE_W, SnakeEnity } from "./model";
+import { change, mask_u } from "./direction";
 
 enum PlayState {
     DEFAULT = -2,
@@ -14,8 +15,8 @@ enum PlayState {
     RESUME = PAUSE + 1,
 }
 
-const default_grids = Array.from({ length: DEFAULT_H}, (_: number, y: number) => {
-    return Array.from({ length: DEFAULT_W }, (_: number, x: number) => {
+const default_grids = Array.from({ length: DEFAULT_SNAKE_H}, (_: number, y: number) => {
+    return Array.from({ length: DEFAULT_SNAKE_W }, (_: number, x: number) => {
         return {
             x,
             y,
@@ -33,7 +34,6 @@ function Snake() {
 
     useEffect(() => {
         changePlayState(PlayState.INIT);
-        console.log('init');
         init();
     }, []);
 
@@ -42,7 +42,11 @@ function Snake() {
     }
 
     function updateUI() {
-        const matrix: SPoint[][] = clone(grids);
+        const matrix: VPoint[][] = clone(grids);
+        const { head } = snake || {};
+        if (head) {
+            matrix[head.y][head.x].visible = true;
+        }
         snake?.body.forEach((point: SPoint) => {
             matrix[point.y][point.x].visible = true;
         });
@@ -50,28 +54,40 @@ function Snake() {
     }
 
     useEffect(() => {
+        console.log('>>>useEffect, playState: ', playState);
+        
+        const { isAlive } = snake;
         // @ts-ignore
-        if (playState !== PlayState.RUNNING || playState !== PlayState.RESUME) {
+        if (playState !== PlayState.RUNNING || !isAlive) {
             return;
         }
         intervalId = setInterval(() => {
+            refreshSnake(run(snake, grids));
             console.log('run animation');
-        }, 50);
+        }, 1000);
         return (() => {
             clearInterval(intervalId);
         })
     });
 
-    function start() {
+    useEffect(() => {
+        updateUI();
+    }, [snake]);
 
+    function start() {
+        console.log('>>>start>>>>');
+        changePlayState(PlayState.RUNNING);
     }
 
     function stop() {
-
+        changePlayState(PlayState.STOP);
     }
 
     function up() {
-
+        const { head } = snake;
+        const { next_dir } = head || {};
+        head.next_dir = change(next_dir, mask_u);
+        refreshSnake(snake);
     }
 
     function down() {
