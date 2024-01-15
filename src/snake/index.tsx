@@ -106,7 +106,7 @@ function Snake() {
                 foodBufferCount.current = 0;
             }
             foodBufferCount.current += 1;
-        }, 400);
+        }, 200);
         return () => {
             clearInterval(intervalId);
         };

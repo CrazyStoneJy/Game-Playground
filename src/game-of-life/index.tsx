@@ -21,13 +21,36 @@ const default_grids = Array.from({ length: DEFAULT_H}, (_: number, y: number) =>
 function GameOfLife() {
 
     const [grids, changeGrids] = useState(default_grids);
+    const [playState, refreshPlayState] = useState(0);
+    let intervalId: any;
+
+    useEffect(() => {
+        if (playState <= 0) {
+            return;
+        }
+        intervalId = setInterval(() => {
+            start();
+        }, 200);
+        return (() => {
+            clearInterval(intervalId);
+        });
+    });
 
     function start() {
         const matrix: TPoint[][] = next(grids);
         changeGrids(matrix);
     }
 
+    function autoStart() {
+        refreshPlayState(1);
+    }
+
+    function stop() {
+        refreshPlayState(-1);
+    }
+
     function reset() {
+        stop();
         changeGrids(default_grids);
     }
 
@@ -41,7 +64,9 @@ function GameOfLife() {
     return (
         <div className="flex w-auto h-auto justify-center align-middle flex-col ">
             <div className="flex flex-row h-20 w-auto justify-center items-center">
-                <button className="flex flex-row mr-3" onClick={start}>start</button>
+                <button className="flex flex-row mr-5" onClick={start}>start</button>
+                <button className="flex flex-row mr-5" onClick={autoStart}>auto-start</button>
+                <button className="flex flex-row mr-5" onClick={stop}>stop</button>
                 <button onClick={reset}>reset</button>
             </div>
             <Board grids={grids} onItemClick={(point: Point) => {
