@@ -1,7 +1,7 @@
-import { isEquals } from "../base/arrays";
+import { isEquals } from "../utils/arrays";
 import Cell from "./cell";
 import DifficultRank from './difficult_rank';
-import Strings from '../base/strings';
+import Strings from '../utils/strings';
 
 class Sudoku {
 

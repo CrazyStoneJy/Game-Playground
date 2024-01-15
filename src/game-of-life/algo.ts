@@ -1,4 +1,4 @@
-import { clone } from "../base/utils";
+import { clone } from "../utils/utils";
 import { GCell, TPoint, dirs } from "../model/model";
 
 function next(grids: TPoint[][]): TPoint[][] {

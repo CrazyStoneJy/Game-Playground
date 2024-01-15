@@ -1,5 +1,5 @@
-import { contain } from "../base/arrays";
-import { clone } from "../base/utils";
+import { contain } from "../utils/arrays";
+import { clone } from "../utils/utils";
 import { Point, PointType, SPoint, TPoint, VPoint } from "../model/model";
 import { getPoint, isDown, isLeft, isRight, isUp, mask_r } from "./direction";
 import { DEFAULT_SNAKE_H, DEFAULT_SNAKE_W, SnakeEnity } from "./model";

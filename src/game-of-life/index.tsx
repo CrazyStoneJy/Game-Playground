@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import Board, { DEFAULT_H, DEFAULT_W } from "./board";
 import { GCell, Point, PointType, TPoint } from "../model/model";
-import { clone } from "../base/utils";
+import { clone } from "../utils/utils";
 import { next } from "./algo";
 
 const default_grids = Array.from({ length: DEFAULT_H}, (_: number, y: number) => {

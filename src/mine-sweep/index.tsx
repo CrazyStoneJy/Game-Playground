@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import gen, { getUnmarkedMineCount, isMine, show } from "./gen";
-import { clone } from "../base/utils";
+import { clone } from "../utils/utils";
 import CellView from "./cell";
 import { DIF, EASY, Level, MID } from "./level";
 import { Cell } from "../model/model";

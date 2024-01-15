@@ -1,4 +1,4 @@
-import { clone } from "../base/utils";
+import { clone } from "../utils/utils";
 import { Cell, Point, dirs } from "../model/model";
 import { Level } from "./level";
 

@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Board, { DEFAULT_H, DEFAULT_W } from "../game-of-life/board";
 import { PointType, SPoint, TPoint, VPoint } from "../model/model";
 import { genFood, initSnake, run } from "./algo";
-import { clone } from "../base/utils";
+import { clone } from "../utils/utils";
 import { DEFAULT_SNAKE_H, DEFAULT_SNAKE_W, SnakeEnity } from "./model";
 import { change, mask_d, mask_l, mask_r, mask_u } from "./direction";
 
