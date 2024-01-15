@@ -20,3 +20,8 @@ to do list
 ## snake (**正在制作**)
 - [x] 随机生成食物
 - [x] 身体碰撞检测
+
+## tetris
+- [ ] 存储已经落地的方块的坐标 `./tetris/store.ts`
+- [ ] 碰撞边界检测 `./tetris/algo.ts`
+- [ ] 方块的旋转 

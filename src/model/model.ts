@@ -54,3 +54,9 @@ export const dirs_four = [
     {x: -1 , y : 0},
     {x: 1 , y : 0}
 ];
+
+export enum PlayState {
+    STOP = -1,
+    INIT = 0,
+    RUNNING = 1
+}
