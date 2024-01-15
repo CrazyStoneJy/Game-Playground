@@ -7,6 +7,7 @@ import MineSweep from "./mine-sweep";
 import SudokuGame from "./sudoku";
 import GameOfLife from "./game-of-life";
 import Snake from "./snake";
+import Tetris from "./tetris";
 
 const router = createBrowserRouter([
     {
@@ -29,6 +30,11 @@ const router = createBrowserRouter([
         path: "/snake",
         element: <Snake />,
     },
+    // Tetris
+    {
+        path: "/tetris",
+        element: <Tetris />,
+    }
 ]);
 
 const container = document.getElementById("root");

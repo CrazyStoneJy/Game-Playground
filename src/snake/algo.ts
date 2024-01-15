@@ -145,8 +145,11 @@ function moveBody(snake: SnakeEnity, grids: TPoint[][], next_dir: number, eaten:
 
 function checkRange(point: Point, grids: TPoint[][]): boolean {
     const isInRange = point.x >= 0 && point.x < DEFAULT_SNAKE_W && point.y >= 0 && point.y < DEFAULT_SNAKE_H;
+    if (!isInRange) {
+        return false;
+    }
     const hasBodyCollision = grids[point.y][point.x].visible && (grids[point.y][point.x].type !== PointType.FOOD);
-    return isInRange && !hasBodyCollision;
+    return !hasBodyCollision;
 }
 
 function genFood(grids: TPoint[][], snake: SnakeEnity): SPoint {
