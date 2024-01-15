@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import Board, { DEFAULT_H, DEFAULT_W } from "./board";
-import { GCell, Point } from "../model/model";
+import { GCell, Point, PointType, TPoint } from "../model/model";
 import { clone } from "../base/utils";
 import { next } from "./algo";
 
@@ -10,7 +10,8 @@ const default_grids = Array.from({ length: DEFAULT_H}, (_: number, y: number) =>
             x,
             y,
             visible: false,
-            val: '*'
+            // val: '*',
+            type: PointType.DEFAULT
         };
     })
 })
@@ -22,7 +23,7 @@ function GameOfLife() {
     const [grids, changeGrids] = useState(default_grids);
 
     function start() {
-        const matrix: GCell[][] = next(grids);
+        const matrix: TPoint[][] = next(grids);
         changeGrids(matrix);
     }
 
@@ -31,7 +32,7 @@ function GameOfLife() {
     }
 
     const toggleVisible = (point: Point) => {
-        const matrix: GCell[][] = clone(grids);
+        const matrix: TPoint[][] = clone(grids);
         const cell = matrix[point.y][point.x];
         cell.visible = !cell.visible;
         changeGrids(matrix);

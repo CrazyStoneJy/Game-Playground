@@ -12,9 +12,22 @@ export type SDir = {
     cur_dir: number
 }
 
-export type VPoint = Omit<Cell, "val" | "isFlag"> 
+// 点的类型
+export enum PointType {
+    SNAKE,
+    FOOD,
+    DEFAULT
+}
 
-export type SPoint = VPoint & SDir;
+export type SType = {
+    type: PointType
+}
+
+export type VPoint = Omit<Cell, "val" | "isFlag">;
+
+export type TPoint = VPoint & SType;
+
+export type SPoint = TPoint & SDir;
 
 export type Point = Omit<Cell, "val" | "visible" | "isFlag">;
 

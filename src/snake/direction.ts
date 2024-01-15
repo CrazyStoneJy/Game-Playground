@@ -5,10 +5,10 @@
 import { Point, dirs_four } from "../model/model";
 
 // let direction: number = 1;
-const mask_u = parseInt('1000', 2);
-const mask_d = parseInt('0100', 2);
-const mask_l = parseInt('0010', 2);
-const mask_r = parseInt('0001', 2);
+const mask_u = parseInt('0001', 2);
+const mask_d = parseInt('0010', 2);
+const mask_l = parseInt('0100', 2);
+const mask_r = parseInt('1000', 2);
 
 // next diection colud be.
 const turn_dirs = [

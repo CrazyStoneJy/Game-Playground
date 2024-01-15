@@ -1,12 +1,12 @@
 import { clone } from "../base/utils";
-import { GCell, dirs } from "../model/model";
+import { GCell, TPoint, dirs } from "../model/model";
 
-function next(grids: GCell[][]): GCell[][] {
-    const matrix: GCell[][] = clone(grids);
-    grids.forEach((cells: GCell[], h_index: number) => {
-        cells.forEach((_: GCell, w_index: number) => {
-            const cell: GCell = matrix[h_index][w_index];
-            const neighbors: GCell[] = getNeighbors(cell, grids);
+function next(grids: TPoint[][]): TPoint[][] {
+    const matrix: TPoint[][] = clone(grids);
+    grids.forEach((cells: TPoint[], h_index: number) => {
+        cells.forEach((_: TPoint, w_index: number) => {
+            const cell: TPoint = matrix[h_index][w_index];
+            const neighbors: TPoint[] = getNeighbors(cell, grids);
             if (cell.visible) {
                 matrix[h_index][w_index] = canAlive(cell, neighbors);
             } else {
@@ -17,8 +17,8 @@ function next(grids: GCell[][]): GCell[][] {
     return matrix;
 }
 
-function d2alive(cell: GCell, neighbors: GCell[]): GCell {
-    const cells: GCell[] = neighbors.filter((cell: GCell) => {
+function d2alive(cell: TPoint, neighbors: TPoint[]): TPoint {
+    const cells: TPoint[] = neighbors.filter((cell: TPoint) => {
         return cell.visible;
     });
     if (cells.length === 3) {
@@ -27,8 +27,8 @@ function d2alive(cell: GCell, neighbors: GCell[]): GCell {
     return cell;
 }
 
-function canAlive(cell: GCell, neighbors: GCell[]): GCell {
-    const cells: GCell[] = neighbors.filter((cell: GCell) => {
+function canAlive(cell: TPoint, neighbors: TPoint[]): TPoint {
+    const cells: TPoint[] = neighbors.filter((cell: TPoint) => {
         return cell.visible;
     });
     const len = cells.length;
@@ -42,10 +42,10 @@ function canAlive(cell: GCell, neighbors: GCell[]): GCell {
     return cell;
 }
 
-function getNeighbors(cell: GCell, grids: GCell[][]): GCell[] {
+function getNeighbors(cell: TPoint, grids: TPoint[][]): TPoint[] {
     const h = grids.length;
     const w = grids[0].length;
-    let neighbors: GCell[] = [];
+    let neighbors: TPoint[] = [];
     dirs.forEach((dir: {x: number, y: number}) => {
         const x = cell.x + dir.x;
         const y = cell.y + dir.y;

@@ -1,5 +1,7 @@
 // import Cell from "../ui/Sudoku/cell";
 
+import { Point } from "../model/model";
+
 
 function isEmpty(obj: any) {
     return !Array.isArray(obj);
@@ -79,23 +81,11 @@ function print2DArray(array: number[][]): String | null{
     return out;
 }
 
-// function print2DCellArray(array: Cell[][]): String {
-//     if (isEmpty(array)) {
-//         return;
-//     }
-//     let out = '[';
-//     for (let i = 0; i < array.length; i++) {
-//         out += '\n\t['
-//         for (let j = 0; j < array[i].length; j++) {
-//             const num = array[i][j].isShowNum ? array[i][j].num : '';
-//             out += num + ((j !== array[i].length - 1) ? ", " : "");
-//         }
-//         out += ']\n';
-//     }
-//     out += ']';
-//     console.log(out);
-//     return out;
-// }
+function contain<T extends Point>(points: T[], point: T): boolean {
+    return points.some((p: Point) => {
+        return p.x === point.x && p.y === point.y;
+    });
+}
 
 export {
     isEmpty,
@@ -103,5 +93,6 @@ export {
     shuffle,
     print,
     print2DArray,
-    isEquals
+    isEquals,
+    contain
 }

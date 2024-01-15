@@ -1,30 +1,33 @@
-import { GCell, Point, SPoint, VPoint } from "../model/model";
+import { GCell, Point, PointType, SPoint, TPoint, VPoint } from "../model/model";
 
 
 export const DEFAULT_H = 20;
 export const DEFAULT_W = 20;
 
 
-interface BoardProps<T extends VPoint> {
+interface BoardProps<T extends TPoint> {
     grids: T[][];
     onItemClick?: (point: Point) => void;
 }
 
-function Board<T extends VPoint>(props: BoardProps<T>) {
+function Board<T extends TPoint>(props: BoardProps<T>) {
     const { grids, onItemClick } = props;
 
-    function background(cell: VPoint): string {
-        const { visible } = cell;
+    function background(cell: TPoint): string {
+        const { visible, type } = cell;
+        if (type === PointType.FOOD) {
+            return visible ? `bg-red-400` : `bg-slate-100`;
+        } 
         return visible ? `bg-gray-400` : `bg-slate-100`;
     }
 
     return (
         <div className="flex w-auto h-auto justify-center align-middle flex-col ">
-            {grids.map((cells: VPoint[], h_index: number) => {
+            {grids.map((cells: TPoint[], h_index: number) => {
                 return (
                     <div key={`item_${h_index}`} className="flex flex-row justify-center items-center">
                         {
-                            cells.map((cell: VPoint, w_index: number) => {
+                            cells.map((cell: TPoint, w_index: number) => {
                                 return (
                                     <div
                                         key={`child_${w_index}`}
