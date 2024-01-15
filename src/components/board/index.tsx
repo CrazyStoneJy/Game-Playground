@@ -1,4 +1,4 @@
-import { GCell, Point, PointType, SPoint, TPoint, VPoint } from "../model/model";
+import { GCell, Point, PointType, SPoint, TPoint, VPoint } from "../../model/model";
 
 
 export const DEFAULT_H = 20;

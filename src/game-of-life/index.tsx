@@ -1,26 +1,27 @@
 import React, { useEffect, useRef, useState } from "react";
-import Board, { DEFAULT_H, DEFAULT_W } from "./board";
+import Board, { DEFAULT_H, DEFAULT_W } from "../components/board";
 import { GCell, Point, PointType, TPoint } from "../model/model";
 import { clone } from "../utils/utils";
 import { next } from "./algo";
+import { genBoard } from "../components/board/gen";
 
-const default_grids = Array.from({ length: DEFAULT_H}, (_: number, y: number) => {
-    return Array.from({ length: DEFAULT_W }, (_: number, x: number) => {
-        return {
-            x,
-            y,
-            visible: false,
-            // val: '*',
-            type: PointType.DEFAULT
-        };
-    })
-})
+// const default_grids = Array.from({ length: DEFAULT_H}, (_: number, y: number) => {
+//     return Array.from({ length: DEFAULT_W }, (_: number, x: number) => {
+//         return {
+//             x,
+//             y,
+//             visible: false,
+//             // val: '*',
+//             type: PointType.DEFAULT
+//         };
+//     })
+// })
 
 // console.log(default_grids);
 
 function GameOfLife() {
 
-    const [grids, changeGrids] = useState(default_grids);
+    const [grids, changeGrids] = useState(genBoard(DEFAULT_H, DEFAULT_W));
     const [playState, refreshPlayState] = useState(0);
     let intervalId: any;
 
@@ -51,7 +52,7 @@ function GameOfLife() {
 
     function reset() {
         stop();
-        changeGrids(default_grids);
+        changeGrids(genBoard(DEFAULT_H, DEFAULT_W));
     }
 
     const toggleVisible = (point: Point) => {

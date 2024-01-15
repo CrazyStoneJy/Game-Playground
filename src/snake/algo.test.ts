@@ -1,8 +1,9 @@
-import { default_grids } from ".";
 import { PointType, SPoint } from "../model/model";
 import { genFood, initSnake, run } from "./algo";
 import { SnakeEnity } from "./model";
 import { change, mask_l, mask_u } from "./direction";
+import { genBoard } from "../components/board/gen";
+import { DEFAULT_H, DEFAULT_W } from "../components/board";
 
 describe('algo', () => {
 
@@ -10,7 +11,7 @@ describe('algo', () => {
     let food: SPoint;
 
     test('init', () => {
-        snake = initSnake(default_grids);
+        snake = initSnake(genBoard(DEFAULT_H, DEFAULT_W));
         food = {
             x: 11,
             y: 6,
@@ -29,7 +30,7 @@ describe('algo', () => {
         let i = 0;
         let nextSnake: SnakeEnity = snake;
         while (i <= 3) {
-            nextSnake = run(nextSnake, default_grids, food);
+            nextSnake = run(nextSnake, genBoard(DEFAULT_H, DEFAULT_W), food);
             console.log(nextSnake);
             i++;
         }

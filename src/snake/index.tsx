@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import Board, { DEFAULT_H, DEFAULT_W } from "../game-of-life/board";
+import Board, { DEFAULT_H, DEFAULT_W } from "../components/board";
 import { PointType, SPoint, TPoint, VPoint } from "../model/model";
 import { genFood, initSnake, run } from "./algo";
 import { clone } from "../utils/utils";
 import { DEFAULT_SNAKE_H, DEFAULT_SNAKE_W, SnakeEnity } from "./model";
 import { change, mask_d, mask_l, mask_r, mask_u } from "./direction";
+import { genBoard } from "../components/board/gen";
 
 enum PlayState {
     DEFAULT = -2,
@@ -15,25 +16,8 @@ enum PlayState {
     RESUME = PAUSE + 1,
 }
 
-export const default_grids: TPoint[][] = Array.from(
-    { length: DEFAULT_SNAKE_H },
-    (_: number, y: number) => {
-        return Array.from(
-            { length: DEFAULT_SNAKE_W },
-            (_: number, x: number) => {
-                return {
-                    x,
-                    y,
-                    visible: false,
-                    type: PointType.DEFAULT
-                };
-            }
-        );
-    }
-);
-
 function Snake() {
-    const [grids, changeGrids] = useState(default_grids);
+    const [grids, changeGrids] = useState(genBoard(DEFAULT_H, DEFAULT_W));
     const [snake, refreshSnake] = useState<SnakeEnity>(initSnake(grids));
     const [food, refreshFood] = useState<TPoint | null>(null);
     const lastFood = useRef<TPoint | null>(null);
