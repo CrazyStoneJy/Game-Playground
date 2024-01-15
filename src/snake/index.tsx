@@ -15,7 +15,7 @@ enum PlayState {
     RESUME = PAUSE + 1,
 }
 
-const default_grids: TPoint[][] = Array.from(
+export const default_grids: TPoint[][] = Array.from(
     { length: DEFAULT_SNAKE_H },
     (_: number, y: number) => {
         return Array.from(
@@ -58,7 +58,7 @@ function Snake() {
             alert("you are lost!");
             return;
         }
-        console.log(snake);
+        // console.log(snake);
         
         if (head) {
             matrix[head.y][head.x].visible = true;
@@ -72,8 +72,8 @@ function Snake() {
             lastFood.current = food;
         } else {
             if (lastFood.current) {
-                matrix[lastFood.current.y][lastFood.current.x].visible = false;
-                matrix[lastFood.current.y][lastFood.current.x].type = PointType.DEFAULT;
+                matrix[lastFood.current.y][lastFood.current.x].visible = true;
+                matrix[lastFood.current.y][lastFood.current.x].type = PointType.SNAKE;
             }
         }       
         changeGrids(matrix);
@@ -89,14 +89,15 @@ function Snake() {
             const _snake: SnakeEnity = run(snake, grids, food);
             const { eaten } = _snake;
             refreshSnake(_snake);
-
-            // generate food
+            
             if (eaten && food) {
                 console.log('has eaten:', food);
                 refreshFood(null);
                 hasFood.current = false;
+                foodBufferCount.current = 0;
             }
 
+            // generate food
             if (!hasFood.current && foodBufferCount.current > 2) {
                 const _food = genFood(grids, snake);
                 console.log('refresh food ', _food);
@@ -174,8 +175,11 @@ function Snake() {
                 }
             }}
         >
-            <div className="flex flex-row mb-10 justify-center items-center text-2xl">
+            <div className="flex flex-row mb-5 justify-center items-center text-2xl">
                 贪吃蛇
+            </div>
+            <div className="flex flex-row mb-3 justify-center items-center text-xs">
+                按R键开始，Q键停止，方向： [W: 上, S: 下, A: 左, D: 右]
             </div>
             <Board grids={grids} />
         </div>

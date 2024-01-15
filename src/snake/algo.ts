@@ -1,11 +1,11 @@
 import { contain } from "../base/arrays";
 import { clone } from "../base/utils";
 import { Point, PointType, SPoint, TPoint, VPoint } from "../model/model";
-import { getPoint, mask_r } from "./direction";
+import { getPoint, isDown, isLeft, isRight, isUp, mask_r } from "./direction";
 import { DEFAULT_SNAKE_H, DEFAULT_SNAKE_W, SnakeEnity } from "./model";
 
-function initSnake(grids: VPoint[][]): SnakeEnity {
-    const matrix: VPoint[][] = grids;
+function initSnake(grids: TPoint[][]): SnakeEnity {
+    const matrix: TPoint[][] = grids;
     const h = matrix.length;
     const w = matrix[0].length;
     const midH = Math.floor(h / 2);
@@ -13,18 +13,6 @@ function initSnake(grids: VPoint[][]): SnakeEnity {
 
     // init body
     const body: SPoint[] = [];
-    body.push({
-        ...matrix[midH][midW - 3],
-        visible: true,
-        cur_dir: mask_r,
-        type: PointType.SNAKE
-    });
-    body.push({
-        ...matrix[midH][midW - 2],
-        visible: true,
-        cur_dir: mask_r,
-        type: PointType.SNAKE
-    });
     body.push({
         ...matrix[midH][midW - 1],
         visible: true,
@@ -49,7 +37,7 @@ function initSnake(grids: VPoint[][]): SnakeEnity {
         body,
         head,
         isAlive: true,
-        dir: 1
+        dir: mask_r
     };
     // console.log(snake);
     return snake;
@@ -57,7 +45,7 @@ function initSnake(grids: VPoint[][]): SnakeEnity {
 
 
 
-function run(snake: SnakeEnity, grids: VPoint[][], food: TPoint | null): SnakeEnity {
+function run(snake: SnakeEnity, grids: TPoint[][], food: TPoint | null): SnakeEnity {
     const { isAlive } = snake;
     if (!isAlive) {
         return snake;
@@ -65,7 +53,7 @@ function run(snake: SnakeEnity, grids: VPoint[][], food: TPoint | null): SnakeEn
     return move(snake, grids, food);
 }
 
-function move(snake: SnakeEnity, grids: VPoint[][], food: TPoint | null): SnakeEnity {
+function move(snake: SnakeEnity, grids: TPoint[][], food: TPoint | null): SnakeEnity {
     let nextSnake = clone(snake);
 
     let { head } = nextSnake;
@@ -76,7 +64,7 @@ function move(snake: SnakeEnity, grids: VPoint[][], food: TPoint | null): SnakeE
 
     // move body 
     moveBody(nextSnake, grids, cur_dir, eaten);
-    
+
     return {
         ...nextSnake,
         eaten
@@ -89,11 +77,11 @@ function move(snake: SnakeEnity, grids: VPoint[][], food: TPoint | null): SnakeE
  * @param grids 
  * @returns 蛇头是否碰到了食物
  */
-function moveHead(snake: SnakeEnity, grids: VPoint[][], food: TPoint | null): boolean {
+function moveHead(snake: SnakeEnity, grids: TPoint[][], food: TPoint | null): boolean {
     const { head, dir: next_dir } = snake;
     const { x, y } = head;
     const point = getPoint(next_dir);
-    if (checkRange({x: x + point.x, y: y + point.y})) {
+    if (checkRange({ x: x + point.x, y: y + point.y }, grids)) {
         grids[head.y][head.x].visible = false;
         head.x += point.x;
         head.y += point.y;
@@ -107,7 +95,7 @@ function moveHead(snake: SnakeEnity, grids: VPoint[][], food: TPoint | null): bo
     return false;
 }
 
-function moveBody(snake: SnakeEnity, grids: VPoint[][], next_dir: number, eaten: boolean): void {
+function moveBody(snake: SnakeEnity, grids: TPoint[][], next_dir: number, eaten: boolean): void {
     const { body } = snake;
     let _next_dir: number = next_dir;
     for (let i = body.length - 1; i >= 0; i--) {
@@ -119,29 +107,33 @@ function moveBody(snake: SnakeEnity, grids: VPoint[][], next_dir: number, eaten:
         }
         _next_dir = cur_dir;
     }
-   
+
     // move 
     snake.body = body.map((spoint: SPoint) => {
         const { cur_dir: next_dir, x, y } = spoint;
         const point = getPoint(next_dir);
-        // console.log(point);
-        if (checkRange({x: x + point.x, y: y + point.y})) {
-            grids[spoint.y][spoint.x].visible = false;
-            spoint.x += point.x;
-            spoint.y += point.y;
-        } else {
-            snake.isAlive = false;
-        }
+        grids[spoint.y][spoint.x].visible = false;
+        spoint.x += point.x;
+        spoint.y += point.y;
         return spoint;
     });
 
     // 如果食物被吃，在队尾增加一个 
     if (eaten) {
         const cur_tail: SPoint = body[0];
-        const point = getPoint(cur_tail.cur_dir);
+        let offset: Point = { x: 0, y: 0 };
+        if (isUp(cur_tail.cur_dir)) {
+            offset = { x: 0, y: 1 };
+        } else if (isDown(cur_tail.cur_dir)) {
+            offset = { x: 0, y: -1 };
+        } else if (isLeft(cur_tail.cur_dir)) {
+            offset = { x: 1, y: 0 };
+        } else if (isRight(cur_tail.cur_dir)) {
+            offset = { x: -1, y: 0 };
+        }
         const tail: SPoint = {
-            x: point.x + cur_tail.x,
-            y: point.y + cur_tail.y,
+            x: offset.x + cur_tail.x,
+            y: offset.y + cur_tail.y,
             visible: true,
             type: PointType.SNAKE,
             cur_dir: cur_tail.cur_dir
@@ -151,22 +143,24 @@ function moveBody(snake: SnakeEnity, grids: VPoint[][], next_dir: number, eaten:
 
 }
 
-function checkRange(point: Point): boolean {
-    return point.x >= 0 && point.x < DEFAULT_SNAKE_W && point.y >= 0 && point.y < DEFAULT_SNAKE_H;
+function checkRange(point: Point, grids: TPoint[][]): boolean {
+    const isInRange = point.x >= 0 && point.x < DEFAULT_SNAKE_W && point.y >= 0 && point.y < DEFAULT_SNAKE_H;
+    const hasBodyCollision = grids[point.y][point.x].visible && (grids[point.y][point.x].type !== PointType.FOOD);
+    return isInRange && !hasBodyCollision;
 }
 
 function genFood(grids: TPoint[][], snake: SnakeEnity): SPoint {
     const { body, head } = snake;
-    body.splice(0, 0, head);
-    const snake_entity: SPoint[] = body;
-    const points: VPoint[] = snake_entity.map((point: SPoint) => {
+    const array = clone(body);
+    array.splice(0, 0, head);
+    const points: VPoint[] = array.map((point: SPoint) => {
         return {
             x: point.x,
             y: point.y,
             visible: point.visible
         }
     });
-    const arr:TPoint[] = grids.flat().filter((cell: TPoint) => {
+    const arr: TPoint[] = grids.flat().filter((cell: TPoint) => {
         return !contain(points, cell);
     });
     const len = arr.length;
