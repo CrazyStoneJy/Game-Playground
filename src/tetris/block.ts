@@ -24,12 +24,13 @@
 
 import { PointType, TPoint } from "../model/model";
 
-export const TETRIS_H = 15;
-export const TETRIS_W = 10;
+export const TETRIS_H = 4;
+export const TETRIS_W = 4;
 
 
 export type Block = {
     points: TPoint[];
+    anchor?: TPoint;
 }
 
 const W_MID = Math.floor(TETRIS_W / 2);
@@ -41,7 +42,7 @@ function genO(): Block {
     points.push({ x: W_MID, y: 0, visible: true, type: PointType.DEFAULT });
     points.push({ x: W_MID + 1, y: 0, visible: true, type: PointType.DEFAULT });
     return {
-        points
+        points: move_down(points)
     }
 }
 
@@ -52,7 +53,7 @@ function genM(): Block {
     points.push({ x: W_MID, y: 0, visible: true, type: PointType.DEFAULT });
     points.push({ x: W_MID + 1, y: 0, visible: true, type: PointType.DEFAULT });
     return {
-        points
+        points: move_down(points)
     }
 } 
 
@@ -63,7 +64,7 @@ function genZ(): Block {
     points.push({ x: W_MID, y: 0, visible: true, type: PointType.DEFAULT });
     points.push({ x: W_MID + 1, y: 0, visible: true, type: PointType.DEFAULT });
     return {
-        points
+        points: move_down(points)
     }
 } 
 
@@ -74,20 +75,35 @@ function genX(): Block {
     points.push({ x: W_MID - 1, y: 0, visible: true, type: PointType.DEFAULT });
     points.push({ x: W_MID, y: 0, visible: true, type: PointType.DEFAULT });
     return {
-        points
+        points: move_down(points)
     }
 } 
 
 function genL(): Block {
     const points: TPoint[] = [];
-    points.push({ x: W_MID - 1, y: -2, visible: true, type: PointType.DEFAULT });
-    points.push({ x: W_MID - 1, y: -1, visible: true, type: PointType.DEFAULT });
-    points.push({ x: W_MID - 1, y: 0, visible: true, type: PointType.DEFAULT });
+    const anchor = { x: W_MID , y: -1, visible: true, type: PointType.DEFAULT };
+    points.push({ x: W_MID , y: -2, visible: true, type: PointType.DEFAULT });
+    points.push(anchor);
     points.push({ x: W_MID, y: 0, visible: true, type: PointType.DEFAULT });
+    points.push({ x: W_MID + 1, y: 0, visible: true, type: PointType.DEFAULT });
     return {
-        points
+        points: move_down(points, 2),
+        anchor
     }
 } 
+
+function move_down(points: TPoint[], n: number = 1): TPoint[] {
+    return points.map((point: TPoint) => {
+        return {
+            ...point,
+            y: point.y + n
+        }
+    });
+}
+
+function rotate90(points: TPoint[]): TPoint[] {
+    return points;
+}
 
 export const O: Block = genO();  // 一字
 export const M: Block = genM();  // 山型

@@ -12,14 +12,17 @@ to do list
 - 借鉴anthonyfu的vue扫雷，[链接](https://www.bilibili.com/video/BV1ia411b7jY/?spm_id_from=333.999.0.0)
 
 ## game of life (**已完成**)
+
 - rule of conway's game life. [wiki](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life)
 - [official website](https://conwaylife.com/)
+- [leetcode289](https://leetcode.com/problems/game-of-life/description/)
 
 ## sudoku (**待优化**)
 
 ## snake (**正在制作**)
 - [x] 随机生成食物
 - [x] 身体碰撞检测
+- [ ] 蛇身移动 & 有限状态机 整理文档
 
 ## tetris
 - [ ] 存储已经落地的方块的坐标 `./tetris/store.ts`

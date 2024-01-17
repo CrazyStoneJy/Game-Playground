@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Board from "../components/board";
 import { genBoard } from "../components/board/gen";
-import { Block, L, TETRIS_H, TETRIS_W } from "./block";
+import { Block, L, O, TETRIS_H, TETRIS_W } from "./block";
 import { PlayState, TPoint } from "../model/model";
 
 function Tetris() {
@@ -21,41 +21,47 @@ function Tetris() {
         );
     };
 
-    function updateUI() {
-        // check range & collision
-        const outOfRange = block.points.some((point: TPoint) => {
-            return point.y >= TETRIS_H;
-        })
-        if (outOfRange) {
-            // 
-            return;
-        }
-        const downPoints: TPoint[] = block.points.map((point: TPoint) => {
-            return {
-                ...point,
-                y: point.y + 1,
-            };
-        });
-        refreshBlock({
-            points: downPoints,
-        });
-    }
+    // function updateUI() {
+    //     // check range & collision
+    //     const outOfRange = block.points.some((point: TPoint) => {
+    //         return point.y >= TETRIS_H;
+    //     })
+    //     if (outOfRange) {
+    //         // 
+    //         return;
+    //     }
+    //     const downPoints: TPoint[] = block.points.map((point: TPoint) => {
+    //         return {
+    //             ...point,
+    //             y: point.y + 1,
+    //         };
+    //     });
+    //     refreshBlock({
+    //         points: downPoints,
+    //     });
+    // }
+
+    // useEffect(() => {
+    //     if (playState < PlayState.RUNNING) {
+    //         return;
+    //     }
+    //     intervalId = setInterval(() => {
+    //         // down
+    //         updateUI();
+    //     }, 500);
+    //     return () => {
+    //         clearInterval(intervalId);
+    //     };
+    // });
 
     useEffect(() => {
-        if (playState < PlayState.RUNNING) {
-            return;
-        }
-        intervalId = setInterval(() => {
-            // down
-            updateUI();
-        }, 500);
-        return () => {
-            clearInterval(intervalId);
-        };
-    });
+        refreshPlayState(PlayState.RUNNING);
+    },[]);
 
     useEffect(() => {
         if (grids) {
+            console.log('refresh grids');
+            
             // 清空之前的状态
             grids.flat().forEach((point: TPoint) => {
                 grids[point.y][point.x].visible = false;
@@ -78,6 +84,14 @@ function Tetris() {
         refreshPlayState(PlayState.STOP);
     };
 
+    const show = () => {
+        refreshPlayState(PlayState.RUNNING);
+    }
+
+    const turn = () => {
+
+    }
+
     return (
         <div className="flex flex-col">
             <div className="flex flex-row justify-center items-center my-5">
@@ -89,6 +103,18 @@ function Tetris() {
                     onClick={start}
                 >
                     start
+                </div>
+                <div
+                    className="flex flex-row mx-3 justify-center items-center"
+                    onClick={show}
+                >
+                    show
+                </div>
+                <div
+                    className="flex flex-row mx-3 justify-center items-center"
+                    onClick={turn}
+                >
+                    turn
                 </div>
                 <div
                     className="flex flex-row my-3 justify-center items-center"
