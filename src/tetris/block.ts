@@ -24,6 +24,14 @@
 
 import { PointType, TPoint } from "../model/model";
 
+export enum BlockType {
+    O,
+    M,
+    Z,
+    X,
+    L
+}
+
 export const TETRIS_H = 4;
 export const TETRIS_W = 4;
 
@@ -31,6 +39,8 @@ export const TETRIS_W = 4;
 export type Block = {
     points: TPoint[];
     anchor?: TPoint;
+    type: BlockType;
+    // todo boundary
 }
 
 const W_MID = Math.floor(TETRIS_W / 2);
@@ -42,7 +52,8 @@ function genO(): Block {
     points.push({ x: W_MID, y: 0, visible: true, type: PointType.DEFAULT });
     points.push({ x: W_MID + 1, y: 0, visible: true, type: PointType.DEFAULT });
     return {
-        points: move_down(points)
+        points: move_down(points),
+        type: BlockType.O
     }
 }
 
@@ -53,7 +64,8 @@ function genM(): Block {
     points.push({ x: W_MID, y: 0, visible: true, type: PointType.DEFAULT });
     points.push({ x: W_MID + 1, y: 0, visible: true, type: PointType.DEFAULT });
     return {
-        points: move_down(points)
+        points: move_down(points),
+        type: BlockType.M
     }
 } 
 
@@ -64,7 +76,8 @@ function genZ(): Block {
     points.push({ x: W_MID, y: 0, visible: true, type: PointType.DEFAULT });
     points.push({ x: W_MID + 1, y: 0, visible: true, type: PointType.DEFAULT });
     return {
-        points: move_down(points)
+        points: move_down(points),
+        type: BlockType.Z
     }
 } 
 
@@ -75,7 +88,8 @@ function genX(): Block {
     points.push({ x: W_MID - 1, y: 0, visible: true, type: PointType.DEFAULT });
     points.push({ x: W_MID, y: 0, visible: true, type: PointType.DEFAULT });
     return {
-        points: move_down(points)
+        points: move_down(points),
+        type: BlockType.X
     }
 } 
 
@@ -88,7 +102,8 @@ function genL(): Block {
     points.push({ x: W_MID + 1, y: 0, visible: true, type: PointType.DEFAULT });
     return {
         points: move_down(points, 2),
-        anchor
+        anchor,
+        type: BlockType.L
     }
 } 
 
