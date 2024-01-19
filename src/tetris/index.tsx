@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import Board from "../components/board";
 import { genBoard } from "../components/board/gen";
-import { Block, L, O, TETRIS_H, TETRIS_W } from "./block";
+import { Block, L, O, TETRIS_H, TETRIS_W, blocks } from "./block";
 import { PlayState, TPoint } from "../model/model";
+import op from "./op";
+import { clone } from "../utils/utils";
 
 function Tetris() {
     const [grids, refreshGrids] = useState<TPoint[][]>(
@@ -27,7 +29,7 @@ function Tetris() {
     //         return point.y >= TETRIS_H;
     //     })
     //     if (outOfRange) {
-    //         // 
+    //         //
     //         return;
     //     }
     //     const downPoints: TPoint[] = block.points.map((point: TPoint) => {
@@ -56,25 +58,36 @@ function Tetris() {
 
     useEffect(() => {
         refreshPlayState(PlayState.RUNNING);
-    },[]);
+    }, []);
 
     useEffect(() => {
-        if (grids) {
-            console.log('refresh grids');
-            
+        console.log(block);
+        
+        if (grids && block) {
+            console.log("refresh grids");
+
             // 清空之前的状态
             grids.flat().forEach((point: TPoint) => {
                 grids[point.y][point.x].visible = false;
             });
-            block.points.forEach((point: TPoint) => {
-                // console.log(point);
-                if (checkRange(point)) {
-                    grids[point.y][point.x].visible = true;
-                }
+            block.points.forEach((cells: TPoint[]) => {
+                cells.forEach((point: TPoint) => {
+                    // todo check range
+                    // if (checkRange(point)) {
+                    //     grids[point.y][point.x].visible = true;
+                    // }
+                    if (point.visible) {
+                        grids[point.y][point.x].visible = true;
+                    } else {
+                        grids[point.y][point.x].visible = false;
+                    }
+                });
             });
-            refreshGrids(grids);
+            console.log(clone(grids));
+            
+            refreshGrids(clone(grids));
         }
-    }, [grids, block]);
+    }, [block]);
 
     const start = () => {
         refreshPlayState(PlayState.RUNNING);
@@ -86,10 +99,19 @@ function Tetris() {
 
     const show = () => {
         refreshPlayState(PlayState.RUNNING);
-    }
+    };
 
-    const turn = () => {
+    const rotate = () => {
+        const newBlock = op.rotate(block);
+        refreshBlock(clone(newBlock));
+    };
 
+    const rand = () => {
+        const rand = Math.floor(Math.random() * 5);
+        const newBlock = blocks[rand];
+        console.log(newBlock, rand);
+        
+        refreshBlock(newBlock);
     }
 
     return (
@@ -106,15 +128,15 @@ function Tetris() {
                 </div>
                 <div
                     className="flex flex-row mx-3 justify-center items-center"
-                    onClick={show}
+                    onClick={rand}
                 >
-                    show
+                    random
                 </div>
                 <div
                     className="flex flex-row mx-3 justify-center items-center"
-                    onClick={turn}
+                    onClick={rotate}
                 >
-                    turn
+                    rotate
                 </div>
                 <div
                     className="flex flex-row my-3 justify-center items-center"

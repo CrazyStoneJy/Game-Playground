@@ -22,7 +22,7 @@
  *          xx
  */
 
-import { PointType, TPoint } from "../model/model";
+import { Point, PointType, TPoint } from "../model/model";
 
 export enum BlockType {
     O,
@@ -35,94 +35,110 @@ export enum BlockType {
 export const TETRIS_H = 4;
 export const TETRIS_W = 4;
 
+const MATRIX_O = [
+    [0, 1, 0, 0],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0],
+    [0, 1, 0, 0]
+];
+
+const MATRIX_M = [
+    [0, 0, 0],
+    [0, 1, 0],
+    [1, 1, 1]
+];
+
+const MATRIX_Z = [
+    [0, 0, 0],
+    [1, 1, 0],
+    [0, 1, 1]
+];
+
+const MATRIX_X = [
+    [1, 1],
+    [1, 1]
+];
+
+const MATRIX_L = [
+    [0, 1, 0],
+    [0, 1, 0],
+    [0, 1, 1]
+];
+
 
 export type Block = {
-    points: TPoint[];
-    anchor?: TPoint;
+    points: TPoint[][];
     type: BlockType;
-    // todo boundary
 }
 
 const W_MID = Math.floor(TETRIS_W / 2);
 
 function genO(): Block {
-    const points: TPoint[] = [];
-    points.push({ x: W_MID - 2, y: 0, visible: true, type: PointType.DEFAULT });
-    points.push({ x: W_MID - 1, y: 0, visible: true, type: PointType.DEFAULT });
-    points.push({ x: W_MID, y: 0, visible: true, type: PointType.DEFAULT });
-    points.push({ x: W_MID + 1, y: 0, visible: true, type: PointType.DEFAULT });
     return {
-        points: move_down(points),
+        points: init(MATRIX_O, W_MID),
         type: BlockType.O
     }
 }
 
 function genM(): Block {
-    const points: TPoint[] = [];
-    points.push({ x: W_MID, y: -1, visible: true, type: PointType.DEFAULT });
-    points.push({ x: W_MID - 1, y: 0, visible: true, type: PointType.DEFAULT });
-    points.push({ x: W_MID, y: 0, visible: true, type: PointType.DEFAULT });
-    points.push({ x: W_MID + 1, y: 0, visible: true, type: PointType.DEFAULT });
     return {
-        points: move_down(points),
+        points: init(MATRIX_M, W_MID),
         type: BlockType.M
     }
-} 
+}
 
 function genZ(): Block {
-    const points: TPoint[] = [];
-    points.push({ x: W_MID - 1, y: -1, visible: true, type: PointType.DEFAULT });
-    points.push({ x: W_MID, y: -1, visible: true, type: PointType.DEFAULT });
-    points.push({ x: W_MID, y: 0, visible: true, type: PointType.DEFAULT });
-    points.push({ x: W_MID + 1, y: 0, visible: true, type: PointType.DEFAULT });
     return {
-        points: move_down(points),
+        points: init(MATRIX_Z, W_MID),
         type: BlockType.Z
     }
-} 
+}
 
 function genX(): Block {
-    const points: TPoint[] = [];
-    points.push({ x: W_MID - 1, y: -1, visible: true, type: PointType.DEFAULT });
-    points.push({ x: W_MID, y: -1, visible: true, type: PointType.DEFAULT });
-    points.push({ x: W_MID - 1, y: 0, visible: true, type: PointType.DEFAULT });
-    points.push({ x: W_MID, y: 0, visible: true, type: PointType.DEFAULT });
     return {
-        points: move_down(points),
+        points: init(MATRIX_X, W_MID),
         type: BlockType.X
     }
-} 
+}
 
 function genL(): Block {
-    const points: TPoint[] = [];
-    const anchor = { x: W_MID , y: -1, visible: true, type: PointType.DEFAULT };
-    points.push({ x: W_MID , y: -2, visible: true, type: PointType.DEFAULT });
-    points.push(anchor);
-    points.push({ x: W_MID, y: 0, visible: true, type: PointType.DEFAULT });
-    points.push({ x: W_MID + 1, y: 0, visible: true, type: PointType.DEFAULT });
     return {
-        points: move_down(points, 2),
-        anchor,
+        points: init(MATRIX_L, W_MID),
         type: BlockType.L
     }
-} 
-
-function move_down(points: TPoint[], n: number = 1): TPoint[] {
-    return points.map((point: TPoint) => {
-        return {
-            ...point,
-            y: point.y + n
-        }
-    });
 }
 
-function rotate90(points: TPoint[]): TPoint[] {
-    return points;
+function init(matrix: number[][], midX: number): TPoint[][] {
+    const matrix_mid_x = Math.floor(matrix[0].length / 2);
+    const start_x = (midX - matrix_mid_x);
+    return matrix.map((arr: number[], y: number) => {
+        return arr.map((n: number, x: number) => {
+            return {
+                x: start_x + x,
+                y,
+                visible: n === 1,
+                type: PointType.DEFAULT
+            }
+        });
+    })
 }
 
-export const O: Block = genO();  // 一字
-export const M: Block = genM();  // 山型
-export const Z: Block = genZ();  // z型
-export const X: Block = genX();  // 田字型
-export const L: Block = genL();  // L型
+
+const O: Block = genO();  // 一字
+const M: Block = genM();  // 山型
+const Z: Block = genZ();  // z型
+const X: Block = genX();  // 田字型
+const L: Block = genL();  // L型
+
+const blocks: Block[] = [
+    O,
+    M,
+    Z,
+    X,
+    L
+];
+
+export {
+    O, M, Z, X, L, blocks
+}
 

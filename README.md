@@ -27,4 +27,4 @@ to do list
 ## tetris
 - [ ] 存储已经落地的方块的坐标 `./tetris/store.ts`
 - [ ] 碰撞边界检测 `./tetris/algo.ts`
-- [ ] 方块的旋转 
+- [x] 方块的旋转 
