@@ -23,6 +23,7 @@
  */
 
 import { Point, PointType, TPoint } from "../model/model";
+import { contain } from "../utils/arrays";
 
 export enum BlockType {
     O,
@@ -32,8 +33,8 @@ export enum BlockType {
     L
 }
 
-export const TETRIS_H = 4;
-export const TETRIS_W = 4;
+export const TETRIS_H = 20;
+export const TETRIS_W = 10;
 
 const MATRIX_O = [
     [0, 1, 0, 0],
@@ -69,42 +70,64 @@ const MATRIX_L = [
 export type Block = {
     points: TPoint[][];
     type: BlockType;
+    isDone: boolean;
+    isGameOver?: boolean;
 }
 
 const W_MID = Math.floor(TETRIS_W / 2);
 
+const O: Block = genO();  // 一字
+const M: Block = genM();  // 山型
+const Z: Block = genZ();  // z型
+const X: Block = genX();  // 田字型
+const L: Block = genL();  // L型
+
+const blocks: Block[] = [
+    O,
+    M,
+    Z,
+    X,
+    L
+];
+
+
 function genO(): Block {
     return {
         points: init(MATRIX_O, W_MID),
-        type: BlockType.O
+        type: BlockType.O,
+        isDone: false
     }
 }
 
 function genM(): Block {
     return {
         points: init(MATRIX_M, W_MID),
-        type: BlockType.M
+        type: BlockType.M,
+        isDone: false
     }
 }
 
 function genZ(): Block {
     return {
         points: init(MATRIX_Z, W_MID),
-        type: BlockType.Z
+        type: BlockType.Z,
+        isDone: false
     }
 }
 
 function genX(): Block {
     return {
         points: init(MATRIX_X, W_MID),
-        type: BlockType.X
+        type: BlockType.X,
+        isDone: false
     }
 }
 
 function genL(): Block {
     return {
         points: init(MATRIX_L, W_MID),
-        type: BlockType.L
+        type: BlockType.L,
+        isDone: false
     }
 }
 
@@ -123,22 +146,25 @@ function init(matrix: number[][], midX: number): TPoint[][] {
     })
 }
 
+function isEqulas(block1: Block, block2: Block): boolean {
+    if (block1.type !== block2.type) {
+        return false;
+    }
+    const points1 = block1.points.flat();
+    const points2 = block2.points.flat();
+    return points1.every((point: Point) => {
+        return contain(points2, point);
+    })
+}
 
-const O: Block = genO();  // 一字
-const M: Block = genM();  // 山型
-const Z: Block = genZ();  // z型
-const X: Block = genX();  // 田字型
-const L: Block = genL();  // L型
+function isInitState(block: Block) {
+    return blocks.some((b: Block) => {
+        return isEqulas(b, block);
+    });
+}
 
-const blocks: Block[] = [
-    O,
-    M,
-    Z,
-    X,
-    L
-];
 
 export {
-    O, M, Z, X, L, blocks
+    O, M, Z, X, L, blocks, isEqulas, isInitState
 }
 

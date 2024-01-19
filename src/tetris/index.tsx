@@ -5,6 +5,7 @@ import { Block, L, O, TETRIS_H, TETRIS_W, blocks } from "./block";
 import { PlayState, TPoint } from "../model/model";
 import op from "./op";
 import { clone } from "../utils/utils";
+import { store } from "./store";
 
 function Tetris() {
     const [grids, refreshGrids] = useState<TPoint[][]>(
@@ -14,91 +15,53 @@ function Tetris() {
     const [playState, refreshPlayState] = useState(PlayState.INIT);
     let intervalId: any;
 
-    const checkRange = (point: TPoint): boolean => {
-        return (
-            point.x >= 0 &&
-            point.x < TETRIS_W &&
-            point.y >= 0 &&
-            point.y < TETRIS_H
-        );
-    };
-
-    // function updateUI() {
-    //     // check range & collision
-    //     const outOfRange = block.points.some((point: TPoint) => {
-    //         return point.y >= TETRIS_H;
-    //     })
-    //     if (outOfRange) {
-    //         //
-    //         return;
-    //     }
-    //     const downPoints: TPoint[] = block.points.map((point: TPoint) => {
-    //         return {
-    //             ...point,
-    //             y: point.y + 1,
-    //         };
-    //     });
-    //     refreshBlock({
-    //         points: downPoints,
-    //     });
-    // }
-
-    // useEffect(() => {
-    //     if (playState < PlayState.RUNNING) {
-    //         return;
-    //     }
-    //     intervalId = setInterval(() => {
-    //         // down
-    //         updateUI();
-    //     }, 500);
-    //     return () => {
-    //         clearInterval(intervalId);
-    //     };
-    // });
+    useEffect(() => {
+        if (playState < PlayState.RUNNING) {
+            return;
+        }
+        intervalId = setInterval(() => {
+            down();
+        }, 200);
+        return () => {
+            clearInterval(intervalId);
+        };
+    });
 
     useEffect(() => {
         refreshPlayState(PlayState.RUNNING);
     }, []);
 
     useEffect(() => {
-        console.log(block);
-        
         if (grids && block) {
-            console.log("refresh grids");
-
+            // console.log(block);
             // 清空之前的状态
             grids.flat().forEach((point: TPoint) => {
                 grids[point.y][point.x].visible = false;
             });
+            // show store
+            store.getMatrix().flat().forEach((point: TPoint) => {
+                grids[point.y][point.x].visible = point.visible;
+            })
             block.points.forEach((cells: TPoint[]) => {
                 cells.forEach((point: TPoint) => {
-                    // todo check range
-                    // if (checkRange(point)) {
-                    //     grids[point.y][point.x].visible = true;
-                    // }
-                    if (point.visible) {
+                    if (point.visible && grids[point.y][point.x]) {
                         grids[point.y][point.x].visible = true;
-                    } else {
-                        grids[point.y][point.x].visible = false;
-                    }
+                    } 
                 });
             });
-            console.log(clone(grids));
-            
             refreshGrids(clone(grids));
         }
     }, [block]);
 
     const start = () => {
+        refreshGrids(genBoard(TETRIS_H, TETRIS_W));
+        store.reset();
+        rand();
         refreshPlayState(PlayState.RUNNING);
     };
 
     const stop = () => {
         refreshPlayState(PlayState.STOP);
-    };
-
-    const show = () => {
-        refreshPlayState(PlayState.RUNNING);
     };
 
     const rotate = () => {
@@ -109,17 +72,38 @@ function Tetris() {
     const rand = () => {
         const rand = Math.floor(Math.random() * 5);
         const newBlock = blocks[rand];
-        console.log(newBlock, rand);
-        
+        refreshBlock(newBlock);
+    }
+
+    const left = () => {
+        refreshBlock(clone(op.left(block)));
+    }
+
+    const right = () => {
+        refreshBlock(clone(op.right(block)));
+    }
+
+    const down = () => {
+        const newBlock = clone(op.down(block));
+        const { isDone, isGameOver } = newBlock;
+        if (isGameOver) {
+            stop();
+            alert('you are lost!');
+        }
+        if (isDone) {
+            store.save(newBlock);
+            rand();
+            return;
+        }
         refreshBlock(newBlock);
     }
 
     return (
         <div className="flex flex-col">
-            <div className="flex flex-row justify-center items-center my-5">
+            <div className="flex flex-row justify-center items-center mb-3">
                 俄罗斯方块
             </div>
-            <div className="flex flex-row my-3 justify-center items-center">
+            <div className="flex flex-row justify-center items-center">
                 <div
                     className="flex flex-row mx-3 justify-center items-center"
                     onClick={start}
@@ -137,6 +121,24 @@ function Tetris() {
                     onClick={rotate}
                 >
                     rotate
+                </div>
+                <div
+                    className="flex flex-row mx-3 justify-center items-center"
+                    onClick={left}
+                >
+                    left
+                </div>
+                <div
+                    className="flex flex-row mx-3 justify-center items-center"
+                    onClick={right}
+                >
+                    right
+                </div>
+                <div
+                    className="flex flex-row mx-3 justify-center items-center"
+                    onClick={down}
+                >
+                    down
                 </div>
                 <div
                     className="flex flex-row my-3 justify-center items-center"
