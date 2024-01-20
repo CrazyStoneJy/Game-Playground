@@ -21,7 +21,7 @@ function Tetris() {
         }
         intervalId = setInterval(() => {
             down();
-        }, 200);
+        }, 400);
         return () => {
             clearInterval(intervalId);
         };
