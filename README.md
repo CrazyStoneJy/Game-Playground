@@ -25,6 +25,7 @@ to do list
 - [ ] 蛇身移动 & 有限状态机 整理文档
 
 ## tetris
-- [ ] 存储已经落地的方块的坐标 `./tetris/store.ts`
-- [ ] 碰撞边界检测 `./tetris/algo.ts`
+- [x] 存储已经落地的方块的坐标 `./tetris/store.ts`
+- [x] 碰撞边界检测 `./tetris/algo.ts`
 - [x] 方块的旋转 
+- [ ] 满一行消除逻辑
