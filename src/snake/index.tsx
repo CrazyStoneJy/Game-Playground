@@ -35,6 +35,10 @@ function Snake() {
         updateUI();
     }
 
+    useEffect(() => {
+        document.getElementById('snake_container')?.focus();
+    }, []);
+
     function updateUI() {
         const matrix: TPoint[][] = clone(grids);
         const { head, isAlive } = snake || {};
@@ -43,7 +47,7 @@ function Snake() {
             return;
         }
         // console.log(snake);
-        
+
         if (head) {
             matrix[head.y][head.x].visible = true;
         }
@@ -57,9 +61,10 @@ function Snake() {
         } else {
             if (lastFood.current) {
                 matrix[lastFood.current.y][lastFood.current.x].visible = true;
-                matrix[lastFood.current.y][lastFood.current.x].type = PointType.SNAKE;
+                matrix[lastFood.current.y][lastFood.current.x].type =
+                    PointType.SNAKE;
             }
-        }       
+        }
         changeGrids(matrix);
     }
 
@@ -73,9 +78,9 @@ function Snake() {
             const _snake: SnakeEnity = run(snake, grids, food);
             const { eaten } = _snake;
             refreshSnake(_snake);
-            
+
             if (eaten && food) {
-                console.log('has eaten:', food);
+                console.log("has eaten:", food);
                 refreshFood(null);
                 hasFood.current = false;
                 foodBufferCount.current = 0;
@@ -84,13 +89,13 @@ function Snake() {
             // generate food
             if (!hasFood.current && foodBufferCount.current > 2) {
                 const _food = genFood(grids, snake);
-                console.log('refresh food ', _food);
+                console.log("refresh food ", _food);
                 refreshFood(_food);
                 hasFood.current = true;
                 foodBufferCount.current = 0;
             }
             foodBufferCount.current += 1;
-        }, 200);
+        }, 300);
         return () => {
             clearInterval(intervalId);
         };
@@ -99,6 +104,10 @@ function Snake() {
     useEffect(() => {
         updateUI();
     }, [snake, food]);
+
+    useEffect(() => {
+        start();
+    }, []);
 
     function start() {
         changePlayState(PlayState.RUNNING);
@@ -137,36 +146,38 @@ function Snake() {
     }
 
     return (
-        <div
-            id="snake_container"
-            tabIndex={0}
-            onKeyDown={(event: any) => {
-                const keyName = event.key;
-                if (keyName === "w") {
-                    up();
-                } else if (keyName === "s") {
-                    down();
-                } else if (keyName === "a") {
-                    left();
-                } else if (keyName === "d") {
-                    right();
-                }
-                if (keyName === "r") {
-                    start();
-                }
-                if (keyName === "q") {
-                    stop();
-                }
-            }}
-        >
-            <div className="flex flex-row mb-5 justify-center items-center text-2xl">
-                贪吃蛇
+        <>
+            <div
+                id="snake_container"
+                tabIndex={0}
+                onKeyDown={(event: any) => {
+                    const keyName = event.key;
+                    if (keyName === "w") {
+                        up();
+                    } else if (keyName === "s") {
+                        down();
+                    } else if (keyName === "a") {
+                        left();
+                    } else if (keyName === "d") {
+                        right();
+                    }
+                    if (keyName === "r") {
+                        start();
+                    }
+                    if (keyName === "q") {
+                        stop();
+                    }
+                }}
+            >
+                <div className="flex flex-row mb-5 justify-center items-center text-2xl">
+                    贪吃蛇
+                </div>
+                <div className="flex flex-row mb-3 justify-center items-center text-xs">
+                    按R键开始，Q键停止，方向： [W: 上, S: 下, A: 左, D: 右]
+                </div>
+                <Board grids={grids} />
             </div>
-            <div className="flex flex-row mb-3 justify-center items-center text-xs">
-                按R键开始，Q键停止，方向： [W: 上, S: 下, A: 左, D: 右]
-            </div>
-            <Board grids={grids} />
-        </div>
+        </>
     );
 }
 
