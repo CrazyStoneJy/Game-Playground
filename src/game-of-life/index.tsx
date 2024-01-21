@@ -64,7 +64,9 @@ function GameOfLife() {
 
     return (
         <div className="flex w-auto h-auto justify-center align-middle flex-col ">
-            <div className="flex flex-row h-20 w-auto justify-center items-center">
+            <div className="flex flex-row text-2xl justify-center items-center my-3">康威生命游戏</div>
+            <div className="flex flex-row text-sm justify-center items-center">玩法：在board中，点击选中要演化的格子，点击start演化一次，点击auto-start持续演化</div>
+            <div className="flex flex-row h-10 w-auto justify-center items-center">
                 <button className="flex flex-row mr-5" onClick={start}>start</button>
                 <button className="flex flex-row mr-5" onClick={autoStart}>auto-start</button>
                 <button className="flex flex-row mr-5" onClick={stop}>stop</button>

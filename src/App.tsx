@@ -11,14 +11,6 @@ const routers: Route[] = [
         name: "mine sweep",
     },
     {
-        path: "/sudoku",
-        name: "sudoku",
-    },
-    {
-        path: "/gameOfLife",
-        name: "gameOfLife",
-    },
-    {
         path: "/snake",
         name: "snake",
     },
@@ -26,6 +18,14 @@ const routers: Route[] = [
         path: "/tetris",
         name: "tetris",
     },
+    {
+        path: "/gameOfLife",
+        name: "gameOfLife",
+    },
+    {
+        path: "/sudoku",
+        name: "sudoku",
+    }
 ];
 
 function App() {
