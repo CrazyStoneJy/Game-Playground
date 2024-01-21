@@ -11,7 +11,7 @@ function Tetris() {
     const [grids, refreshGrids] = useState<TPoint[][]>(
         genBoard(TETRIS_H, TETRIS_W)
     );
-    const [block, refreshBlock] = useState<Block>(L);
+    const [block, refreshBlock] = useState<Block>(blocks[Math.floor(Math.random() * 5)]);
     const [playState, refreshPlayState] = useState(PlayState.INIT);
     let intervalId: any;
 
@@ -26,6 +26,10 @@ function Tetris() {
             clearInterval(intervalId);
         };
     });
+
+    useEffect(() => {
+        document.getElementById('container')?.focus();
+    }, []);
 
     useEffect(() => {
         refreshPlayState(PlayState.RUNNING);
@@ -99,56 +103,46 @@ function Tetris() {
     }
 
     return (
-        <div className="flex flex-col">
+        <div className="flex flex-col" id='container' tabIndex={0} onKeyDown={(event) => {
+            switch (event.key) {
+                case 'q':
+                    stop();
+                    return;
+                case 'e':
+                    start();
+                    return;
+                case 'r':
+                    rotate();
+                    return;
+                case 'a':
+                    left();
+                    return;
+                case 'd':
+                    right();
+                    return;
+                case 's':
+                    down();
+                    return;  
+            }
+        }}>
             <div className="flex flex-row justify-center items-center mb-3">
                 俄罗斯方块
             </div>
             <div className="flex flex-row justify-center items-center">
-                <div
-                    className="flex flex-row mx-3 justify-center items-center"
-                    onClick={start}
-                >
-                    start
+                <div className="flex flex-row justify-center items-center">
+                    Q键停止，方向： [ S: 下, A: 左, D: 右], R: 旋转
                 </div>
-                <div
-                    className="flex flex-row mx-3 justify-center items-center"
-                    onClick={rand}
-                >
-                    random
+                
+            </div>
+            <div className="flex flex-row my-5 justify-center">
+                <div>
+                    <Board grids={grids} />
                 </div>
-                <div
-                    className="flex flex-row mx-3 justify-center items-center"
-                    onClick={rotate}
-                >
-                    rotate
-                </div>
-                <div
-                    className="flex flex-row mx-3 justify-center items-center"
-                    onClick={left}
-                >
-                    left
-                </div>
-                <div
-                    className="flex flex-row mx-3 justify-center items-center"
-                    onClick={right}
-                >
-                    right
-                </div>
-                <div
-                    className="flex flex-row mx-3 justify-center items-center"
-                    onClick={down}
-                >
-                    down
-                </div>
-                <div
-                    className="flex flex-row my-3 justify-center items-center"
-                    onClick={stop}
-                >
-                    stop
+                <div className="flex flex-row mx-10 w-28 h-28 justify-center items-center">
+                    <Board grids={block.points} />
                 </div>
             </div>
-
-            <Board grids={grids} />
+            
         </div>
     );
 }

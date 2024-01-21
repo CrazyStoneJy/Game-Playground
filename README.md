@@ -28,4 +28,4 @@ to do list
 - [x] 存储已经落地的方块的坐标 `./tetris/store.ts`
 - [x] 碰撞边界检测 `./tetris/algo.ts`
 - [x] 方块的旋转 
-- [ ] 满一行消除逻辑
+- [x] 满一行消除逻辑
