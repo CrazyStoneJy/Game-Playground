@@ -20,7 +20,10 @@ function MineSweeper() {
     const [mineCount, changeMineCount] = useState(0);
     const [countdown, refrsehCountdown] = useState(0);
     const [isCountdown, changeCountdownState] = useState(false);
+    const [isDev, changeDev] = useState(false);
+    const [isHidden, changeHidden] = useState(true);
     let intervalId: any;
+    const snapshotRef = useRef([] as Cell[][]);
 
     useEffect(() => {
         updateGrids(gen(level));
@@ -81,6 +84,10 @@ function MineSweeper() {
     function check(matrix: Cell[][], x: number, y: number) {
         // check result
         setTimeout(() => {
+            // 备份
+            // if (!isDev) {
+            //     snapshotRef.current = matrix;
+            // }
             if (isMine(matrix[y][x])) {
                 setState(GameState.FINISHED);
                 resetTimer(false);
@@ -99,9 +106,11 @@ function MineSweeper() {
             if (shownCount + mineFlagCount === cells.length) {
                 setState(GameState.FINISHED);
                 resetTimer(false);
-                setTimeout(() => {
-                    alert("you win");
-                }, 100);
+                if (!isDev) {
+                    setTimeout(() => {
+                        alert("you win");
+                    }, 100);
+                }
             }
         }, 100);
     }
@@ -109,6 +118,9 @@ function MineSweeper() {
     const flagClick = (v_index: number, h_index: number) => {
         const matrix = clone(grids);
         const cell = matrix[v_index][h_index];
+        if (cell.visible) {
+            return;
+        }
         cell.isFlag = !cell.isFlag;
         updateGrids(matrix);
         changeMineCount(getUnmarkedMineCount(matrix));
@@ -117,6 +129,7 @@ function MineSweeper() {
     function reset() {
         setState(GameState.INIT);
         updateGrids(gen(level));
+        changeDev(false);
         changeMineCount(level.mineCount);
         isStartRef.current = false;
         resetTimer();
@@ -137,11 +150,13 @@ function MineSweeper() {
                 <button
                     className="flex justify-center items-center h-8 w-16 rounded-md bg-blue-400 hover:bg-blue-200 text-white mr-2"
                     onClick={() => {
-                        const matrix = clone(grids);
-                        matrix.flat().forEach((cell: Cell) => {
+                        const snapshot = clone(grids);
+                        snapshot.flat().forEach((cell: Cell) => {
                             cell.visible = true;
                         });
-                        updateGrids(matrix);
+                        changeDev(true);
+                        updateGrids(snapshot);
+                        changeHidden(!isHidden);
                     }}
                 >
                     显示
