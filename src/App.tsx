@@ -25,7 +25,11 @@ const routers: Route[] = [
     {
         path: "/sudoku",
         name: "sudoku",
-    }
+    },
+    {
+        path: "/xigua",
+        name: "xigua",
+    },
 ];
 
 function App() {

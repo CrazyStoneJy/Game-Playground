@@ -8,6 +8,7 @@ import SudokuGame from "./sudoku";
 import GameOfLife from "./game-of-life";
 import Snake from "./snake";
 import Tetris from "./tetris";
+import Xigua from "./xigua";
 
 const router = createBrowserRouter([
     {
@@ -34,6 +35,10 @@ const router = createBrowserRouter([
     {
         path: "/tetris",
         element: <Tetris />,
+    },
+    {
+        path: "/xigua",
+        element: <Xigua />,
     }
 ]);
 
