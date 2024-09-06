@@ -4,6 +4,8 @@ import { clone } from "../utils/utils";
 import CellView from "./cell";
 import { DIF, EASY, Level, MID } from "./level";
 import { Cell } from "../model/model";
+import Lottie from "lottie-react"
+import firework from '../assets/lottie/fireworks.json'
 
 enum GameState {
     INIT = 0,
@@ -24,6 +26,7 @@ function MineSweeper() {
     const [isHidden, changeHidden] = useState(true);
     let intervalId: any;
     const snapshotRef = useRef([] as Cell[][]);
+    const [isFinished, setFinished] = useState(false)
 
     useEffect(() => {
         updateGrids(gen(level));
@@ -77,7 +80,7 @@ function MineSweeper() {
         clearInterval(intervalId);
         changeCountdownState(false);
         if (isResetCountdown) {
-            refrsehCountdown(0);   
+            refrsehCountdown(0);
         }
     }
 
@@ -108,7 +111,7 @@ function MineSweeper() {
                 resetTimer(false);
                 if (!isDev) {
                     setTimeout(() => {
-                        alert("you win");
+                        setFinished(true)
                     }, 100);
                 }
             }
@@ -161,14 +164,14 @@ function MineSweeper() {
                 >
                     显示
                 </button>
-                <button
+                {/* <button
                     className="flex justify-center items-center h-8 w-16 rounded-md bg-blue-400 hover:bg-blue-200 text-white mr-2"
                     onClick={() => {
                         reset();
                     }}
                 >
                     重置
-                </button>
+                </button> */}
                 <button
                     className="flex justify-center items-center h-8 w-16 rounded-md bg-blue-400 hover:bg-blue-200 text-white mr-2"
                     onClick={() => {
@@ -240,28 +243,38 @@ function MineSweeper() {
 
     return (
         <div>
+            <div></div>
             {renderHeader()}
             {renderTimer()}
-            <div className="flex w-auto h-auto justify-center align-middle flex-row ">
-                {grids.map((v_cells: Cell[], v_index: number) => {
-                    return (
-                        <div key={`item_${v_index}`}>
-                            {v_cells.map((_: Cell, h_index: number) => {
-                                return (
-                                    <CellView
-                                        key={`item_${h_index}`}
-                                        matrix={grids}
-                                        v_index={v_index}
-                                        h_index={h_index}
-                                        click={click}
-                                        flagClick={flagClick}
-                                    />
-                                );
-                            })}
-                        </div>
-                    );
-                })}
+            <div className="absolute top-1/5 w-screen h-screen">
+                <div className="flex w-auto h-auto justify-center align-middle flex-row">
+                    {grids.map((v_cells: Cell[], v_index: number) => {
+                        return (
+                            <div key={`item_${v_index}`}>
+                                {v_cells.map((_: Cell, h_index: number) => {
+                                    return (
+                                        <CellView
+                                            key={`item_${h_index}`}
+                                            matrix={grids}
+                                            v_index={v_index}
+                                            h_index={h_index}
+                                            click={click}
+                                            flagClick={flagClick}
+                                        />
+                                    );
+                                })}
+                            </div>
+                        );
+                    })}
+                </div>
             </div>
+            {
+                isFinished && <div className="absolute top-0 flex flex-row justify-center h-screen w-screen">
+                <Lottie animationData={firework} loop={false} onComplete={() => {
+                    setFinished(false)
+                }}/>
+            </div>
+            }
         </div>
     );
 }

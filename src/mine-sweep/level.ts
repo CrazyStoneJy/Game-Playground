@@ -11,14 +11,14 @@ const EASY: Level = {
 }
 
 const MID: Level = {
-    h: 9,
-    v: 9,
+    h: 12,
+    v: 12,
     mineCount: 15
 }
 
 const DIF: Level = {
-    h: 12,
-    v: 12,
+    h: 16,
+    v: 16,
     mineCount: 30
 }
 
